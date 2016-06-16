@@ -1,7 +1,7 @@
 BoldAsFont=yes
-Font=Ricty Diminished
+Font=Menlo
 CursorType=block
-FontHeight=14
+FontHeight=12
 RightClickAction=paste
 Transparency=high
 Locale=ja_JP
