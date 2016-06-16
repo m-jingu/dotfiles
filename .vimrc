@@ -20,6 +20,8 @@ NeoBundle 'Shougo/unite.vim'
 "NeoBundle 'Shougo/vimproc'
 "NeoBundle 'VimClojure'
 NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vinarise.vim'
+NeoBundle 'vimoutliner/vimoutliner'
 "NeoBundle 'jpalardy/vim-slime'
 "NeoBundle 'scrooloose/syntastic'
 "NeoBundle 'scrooloose/nerdtree'
@@ -149,7 +151,7 @@ set showcmd
 " 行を強調表示
 set cursorline
 " 列を強調表示
-set cursorcolumn
+"set cursorcolumn
  
  
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -391,8 +393,9 @@ if has('syntax')
   call ZenkakuSpace()
 endif
 
-"filetype plugin indent on
+filetype plugin indent on
 "colorscheme jellybeans
+"set bg=dark
 colorscheme hybrid
 
 set laststatus=2
