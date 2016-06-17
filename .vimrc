@@ -153,6 +153,8 @@ set cursorline
 " 列を強調表示
 "set cursorcolumn
  
+" 削除でレジスタに格納しない(ビジュアルモードでの選択後は格納する)
+nnoremap x "_x
  
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
