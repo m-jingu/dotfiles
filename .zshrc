@@ -143,7 +143,7 @@ case "${OSTYPE}" in
 freebsd*|darwin*)
     alias ls="ls -G"
     ;;
-linux*)
+linux*|msys*)
     alias ls="ls -F --color=auto"
     ;;
 cygwin*)
