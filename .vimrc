@@ -1,119 +1,189 @@
-" vi 互換ではなくVim のデフォルト設定にする
+" ============================================
+" Vim設定ファイル
+" ============================================
+" このファイルは以下の機能を提供します：
+" 1. プラグイン管理（NeoBundle）
+" 2. 基本環境設定
+" 3. キーマッピングと操作性向上
+" 4. 日本語環境対応
+" 5. ステータスライン設定
+" 6. 開発支援機能
+
+" ============================================
+" 基本設定
+" ============================================
+" vi互換モードを無効化（Vimの機能をフル活用）
 if &compatible
     set nocompatible
 endif
 
-" 一旦ファイルタイプ関連を無効化
+" ファイルタイプ検出を一旦無効化（プラグイン読み込み後に有効化）
 filetype off
-" neobundleでプラグインを管理
+
+" ============================================
+" プラグイン管理（NeoBundle）
+" ============================================
+" NeoBundleの自動インストールと初期化
 if has('vim_starting')
-    " neobundle をインストールしていない場合は自動インストール
+    " NeoBundleがインストールされていない場合は自動インストール
     if !isdirectory(expand("~/.vim/bundle/neobundle.vim/"))
-        echo "install neobundle..."
-        " vim からコマンド呼び出しているだけ neobundle.vim のクローン
+        echo "Installing neobundle..."
+        " GitからNeoBundleをクローン
         :call system("git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim")
     endif
+    " NeoBundleのランタイムパスを追加
     set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
+
+" NeoBundleの初期化
 call neobundle#begin(expand('~/.vim/bundle'))
-let g:neobundle_default_git_protocol='https'
-NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'vimoutliner/vimoutliner'
-NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'w0ng/vim-hybrid'
-NeoBundle 'Shougo/vinarise.vim'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimshell.vim'
-NeoBundle 'Shougo/vimproc'
+let g:neobundle_default_git_protocol='https'  " HTTPSプロトコルを使用
+
+" プラグインの定義
+NeoBundleFetch 'Shougo/neobundle.vim'        " NeoBundle本体
+NeoBundle 'vimoutliner/vimoutliner'          " アウトライン編集支援
+NeoBundle 'itchyny/lightline.vim'            " ステータスライン
+NeoBundle 'w0ng/vim-hybrid'                  " カラースキーム
+NeoBundle 'Shougo/vinarise.vim'              " バイナリエディタ
+NeoBundle 'Shougo/unite.vim'                 " 統合インターフェース
+NeoBundle 'Shougo/vimshell.vim'              " シェル統合
+NeoBundle 'Shougo/vimproc'                   " 非同期処理
+
+" プラグインのチェックと読み込み
 NeoBundleCheck
 call neobundle#end()
 
-set t_Co=256
-" 環境設定系
-" シンタックスハイライト
-syntax on
-" エンコード
-set encoding=utf8
-" ファイルエンコード
-set fileencoding=utf-8
-" スクロールする時に下が見えるようにする
-set scrolloff=5
-" .swapファイルを作らない
-set noswapfile
-" バックアップファイルを作らない
-set nowritebackup
-" バックアップをしない
-set nobackup
-" バックスペースで各種消せるようにする
-set backspace=indent,eol,start
-" ビープ音を消す
-set vb t_vb=
-set novisualbell
-" OSのクリップボードを使う
-set clipboard+=unnamed
-set clipboard=unnamed
-" 不可視文字を表示
-set list
-" 不可視文字を表示
+" ファイルタイプ検出を有効化
+filetype plugin indent on
+
+" ============================================
+" 表示設定
+" ============================================
+" カラー設定
+set t_Co=256                                 " 256色対応
+syntax on                                    " シンタックスハイライト有効
+colorscheme hybrid                           " カラースキーム設定
+
+" 行番号とルーラー
+set number                                   " 行番号表示
+set ruler                                    " 右下に行・列番号表示
+
+" カーソル表示
+set cursorline                              " 現在行を強調表示
+set cursorcolumn                            " 現在列を強調表示
+
+" 折り返しとスクロール
+set wrap                                    " 長い行を折り返し表示
+set textwidth=0                             " 自動折り返しを無効化
+set scrolloff=5                             " スクロール時の余白行数
+
+" 不可視文字の表示
+set list                                    " 不可視文字を表示
 set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↓
-" 行番号を表示
-set number
-" 右下に表示される行・列の番号を表示する
-set ruler
-" 移動コマンドを使ったとき、行頭に移動しない
-set nostartofline
-" 対応括弧に<と>のペアを追加
-set matchpairs& matchpairs+=<:>
-" 対応括弧をハイライト表示する
-set showmatch
-" 対応括弧の表示秒数を3秒にする
-set matchtime=3
-" ウィンドウの幅より長い行は折り返され、次の行に続けて表示される
-set wrap
-" 入力されているテキストの最大幅を無効にする
-set textwidth=0
-" インデントをshiftwidthの倍数に丸める
-set shiftround
-" 補完の際の大文字小文字の区別しない
-set infercase
-" 文字がない場所にもカーソルを移動できるようにする
-"set virtualedit=all
-" 変更中のファイルでも、保存しないで他のファイルを表示
-set hidden
-" 新しく開く代わりにすでに開いてあるバッファを開く
-set switchbuf=useopen
-" 小文字の検索でも大文字も見つかるようにする
-set ignorecase
-" ただし大文字も含めた検索の場合はその通りに検索する
-set smartcase
-" インクリメンタルサーチを行う
-set incsearch
-" 検索結果をハイライト表示
-:set hlsearch
-" コマンド、検索パターンを10000個まで履歴に残す
-set history=10000
-" マウスモード有効
-"set mouse=a
-" xtermとscreen対応
-set ttymouse=xterm2
-" コマンドを画面最下部に表示する
-set showcmd
-" 行を強調表示
-set cursorline
-" 列を強調表示
-set cursorcolumn
- 
-" 削除でレジスタに格納しない(ビジュアルモードでの選択後は格納する)
+
+" ステータスライン
+set laststatus=2                            " 常にステータスラインを表示
+set showcmd                                 " コマンドを画面下部に表示
+
+" ============================================
+" エンコーディング設定
+" ============================================
+set encoding=utf8                           " Vim内部のエンコーディング
+set fileencoding=utf-8                      " ファイル保存時のエンコーディング
+
+" ============================================
+" ファイル操作設定
+" ============================================
+" バックアップとスワップファイル
+set noswapfile                              " スワップファイルを作成しない
+set nowritebackup                           " 書き込み時のバックアップを作成しない
+set nobackup                                " バックアップファイルを作成しない
+
+" バッファ操作
+set hidden                                  " 変更中のファイルでも他のファイルを開ける
+set switchbuf=useopen                       " 既に開いているバッファがあればそれを使用
+
+" ============================================
+" インデント設定
+" ============================================
+set tabstop=4                               " タブ文字の表示幅
+set shiftwidth=4                            " 自動インデントの幅
+set autoindent                              " 自動インデント
+set expandtab                               " タブをスペースに展開
+set shiftround                              " インデントをshiftwidthの倍数に丸める
+
+" ============================================
+" 検索設定
+" ============================================
+set ignorecase                              " 検索時に大文字小文字を区別しない
+set smartcase                               " 大文字を含む場合は大文字小文字を区別
+set incsearch                               " インクリメンタルサーチ
+set hlsearch                                " 検索結果をハイライト表示
+
+" 検索履歴
+set history=10000                           " コマンド・検索履歴を10000件保存
+
+" ============================================
+" 補完設定
+" ============================================
+set infercase                               " 補完時に大文字小文字を推測
+
+" ============================================
+" 括弧とマッチング
+" ============================================
+set matchpairs& matchpairs+=<:>            " 対応括弧に<と>を追加
+set showmatch                               " 対応括弧をハイライト表示
+set matchtime=3                             " 対応括弧の表示時間（3秒）
+
+" ============================================
+" 移動とナビゲーション
+" ============================================
+set nostartofline                           " 移動コマンドで行頭に移動しない
+
+" ============================================
+" バックスペース設定
+" ============================================
+set backspace=indent,eol,start              " バックスペースでインデント、改行、行頭を削除可能
+
+" ============================================
+" 音とビジュアル
+" ============================================
+set vb t_vb=                                " ビープ音を無効化
+set novisualbell                            " ビジュアルベルを無効化
+
+" ============================================
+" クリップボード設定
+" ============================================
+" set clipboard+=unnamed                      " OSのクリップボードを使用
+" set clipboard=unnamed                       " ヤンクをクリップボードにコピー
+
+" ============================================
+" マウス設定
+" ============================================
+"set mouse=a                                " マウスモード有効（コメントアウト）
+set ttymouse=xterm2                         " xtermとscreen対応
+
+" ============================================
+" キーマッピング設定
+" ============================================
+
+" === 基本操作 ===
+" 削除でレジスタに格納しない（ビジュアルモードでの選択後は格納する）
 nnoremap x "_x
- 
-" w!! でスーパーユーザーとして保存（sudoが使える環境限定）
-cmap w!! w !sudo tee > /dev/null %
-" 入力モード中に素早くJJと入力した場合はESCとみなす
+
+" 入力モード中にjjでESC
 inoremap jj <Esc>
-" ESCを二回押すことでハイライトを消す
+
+" ESCを二回押すことで検索ハイライトを消す
 nmap <silent> <Esc><Esc> :nohlsearch<CR>
-" カーソル下の単語を * で検索
+
+" w!!でスーパーユーザーとして保存（sudoが使える環境限定）
+cmap w!! w !sudo tee > /dev/null %
+
+" === 検索関連 ===
+" カーソル下の単語を*で検索（ビジュアルモード）
 vnoremap <silent> * "vy/\V<C-r>=substitute(escape(@v, '\/'), "\n", '\\n', 'g')<CR><CR>
+
 " 検索後にジャンプした際に検索単語を画面中央に持ってくる
 nnoremap n nzz
 nnoremap N Nzz
@@ -121,69 +191,78 @@ nnoremap * *zz
 nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
-" j, k による移動を折り返されたテキストでも自然に振る舞うように変更
-"nnoremap j gj
-"nnoremap k gk
+
+" === 移動改善 ===
+" 表示行単位で行移動する
+nnoremap <silent> j gj
+nnoremap <silent> k gk
+
 " vを二回で行末まで選択
 vnoremap v $h
-" TABにて対応ペアにジャンプ
-nnoremap &lt;Tab&gt; %
-vnoremap &lt;Tab&gt; %
+
+" TABで対応ペアにジャンプ
+nnoremap <Tab> %
+vnoremap <Tab> %
+
+" === ウィンドウ操作 ===
 " Ctrl + hjkl でウィンドウ間を移動
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
 " Shift + 矢印でウィンドウサイズを変更
 nnoremap <S-Left>  <C-w><<CR>
-nnoremap <S-Right> <C-w><CR>
+nnoremap <S-Right> <C-w>><CR>
 nnoremap <S-Up>    <C-w>-<CR>
 nnoremap <S-Down>  <C-w>+<CR>
-" T + ? で各種設定をトグル
-nnoremap [toggle] <Nop>
-nmap T [toggle]
-nnoremap <silent> [toggle]s :setl spell!<CR>:setl spell?<CR>
-nnoremap <silent> [toggle]l :setl list!<CR>:setl list?<CR>
-nnoremap <silent> [toggle]t :setl expandtab!<CR>:setl expandtab?<CR>
-nnoremap <silent> [toggle]w :setl wrap!<CR>:setl wrap?<CR>
-nnoremap <silent> [toggle]p :setl paste!<CR>:setl paste?<CR>
 
-"表示行単位で行移動する
-nnoremap <silent> j gj
-nnoremap <silent> k gk
-"インサートモードでも移動
+" === インサートモードでの移動 ===
 inoremap <c-d> <delete>
 inoremap <c-j> <down>
 inoremap <c-k> <up>
 inoremap <c-h> <left>
 inoremap <c-l> <right>
-"画面切り替え
+
+" === 画面切り替え（重複あり、要整理） ===
 nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <c-h> <c-w>h
-"<space>j, <space>kで画面送り
-"noremap [Prefix]j <c-f><cr><cr>
-"noremap [Prefix]k <c-b><cr><cr>
 
+" === 行移動 ===
 " 行末、行の最初への移動のキーマップ設定
 :map! <C-e> <Esc>$a
 :map! <C-a> <Esc>^i
 :map <C-e> <Esc>$a
 :map <C-a> <Esc>^i
- 
-" \ + rでスクリプト実行
+
+" === トグル機能 ===
+" T + ? で各種設定をトグル
+nnoremap [toggle] <Nop>
+nmap T [toggle]
+nnoremap <silent> [toggle]s :setl spell!<CR>:setl spell?<CR>    " スペルチェック
+nnoremap <silent> [toggle]l :setl list!<CR>:setl list?<CR>      " 不可視文字表示
+nnoremap <silent> [toggle]t :setl expandtab!<CR>:setl expandtab?<CR>  " タブ展開
+nnoremap <silent> [toggle]w :setl wrap!<CR>:setl wrap?<CR>      " 折り返し
+nnoremap <silent> [toggle]p :setl paste!<CR>:setl paste?<CR>    " ペーストモード
+
+" === プラグイン連携 ===
+" \ + rでスクリプト実行（quickrun連携）
 nmap <Leader>r <plug>(quickrun)
- 
-" 全角スペースのハイライトを設定
+
+" ============================================
+" 日本語環境対応
+" ============================================
+" 全角スペースのハイライト設定
 function! ZenkakuSpace()
   highlight ZenkakuSpace cterm=underline ctermfg=darkgrey gui=underline guifg=darkgrey
 endfunction
- 
+
 if has('syntax')
   augroup ZenkakuSpace
     autocmd!
-    " ZenkakuSpaceをカラーファイルで設定するなら次の行は削除
+    " カラースキーム変更時に全角スペースハイライトを再設定
     autocmd ColorScheme       * call ZenkakuSpace()
     " 全角スペースのハイライト指定
     autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
@@ -191,15 +270,9 @@ if has('syntax')
   call ZenkakuSpace()
 endif
 
-filetype plugin indent on
-colorscheme hybrid
-
-set laststatus=2
-set tabstop=4
-set autoindent
-set expandtab
-set shiftwidth=4
-
+" ============================================
+" ステータスライン設定（lightline）
+" ============================================
 let g:lightline = {
         \ 'colorscheme': 'wombat',
         \ 'mode_map': {'c': 'NORMAL'},
@@ -218,6 +291,7 @@ let g:lightline = {
         \ }
         \ }
 
+" ステータスライン用のカスタム関数
 function! LightLineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
@@ -259,6 +333,9 @@ function! LightLineMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
+" ============================================
+" 個人設定ファイルの読み込み
+" ============================================
 " ~/.vimrc.localが存在する場合のみ設定を読み込む
 let s:local_vimrc = expand('~/.vimrc.local')
 if filereadable(s:local_vimrc)
