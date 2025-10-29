@@ -17,17 +17,6 @@ esac
 autoload colors
 colors
 
-#local BLACK=$'%{\e[30m%}'
-#local RED=$'%{\e[31m%}'
-#local GREEN=$'%{\e[32m%}'
-#local YELLOW=$'%{\e[33m%}'
-#local BLUE=$'%{\e[34m%}'
-#local PURPLE=$'%{\e[35m%}'
-#local CYAN=$'%{\e[36m%}'
-#local WHITE=$'%{\e[1;37m%}'
-#local DEFAULT=$'%{\e[1;m%}'
-#local RAINBOW=$'%{\e[$[color=$[31+$RANDOM%6]]m%}'
-
 case ${UID} in
 0)
     PROMPT="%{${fg[red]}%}%n%{${fg[yellow]}%}@%m%{${reset_color}%}# "
@@ -48,34 +37,21 @@ re-prompt() {
 }
 zle -N accept-line re-prompt
 
-# auto change directory
-#
-setopt auto_cd
-
-# auto directory pushd that you can get dirs list by cd -[tab]
-#
-setopt auto_pushd
-
-# command correct edition before each completion attempt
-#
-setopt correct
-
-# compacked complete list display
-#
-setopt list_packed
-
-# no remove postfix slash of command line
-#
-setopt noautoremoveslash
-
-# no beep sound when complete list displayed
-#
-setopt nolistbeep
-
-setopt always_last_prompt
-#setopt print_eight_bit
-#setopt extended_glob
-#bindkey "^I" menu-complete
+setopt auto_cd              # change directory just by typing its name
+#setopt correct              # auto correct mistakes
+setopt interactive_comments # allow comments in interactive mode
+setopt magic_equal_subst    # enable filename expansion for arguments of the form ‘anything=expression’
+setopt nonomatch            # hide error message if there is no match for the pattern
+setopt notify               # report the status of background jobs immediately
+setopt numericglobsort      # sort filenames numerically when it makes sense
+setopt promptsubst          # enable command substitution in prompt
+setopt list_packed          # compacked complete list display
+setopt auto_pushd           # auto directory pushd that you can get dirs list by cd -[tab]
+setopt noautoremoveslash    # no remove postfix slash of command line
+setopt nolistbeep           # no beep sound when complete list displayed
+setopt print_eight_bit      # print eight bit characters literally in completion lists
+setopt extended_glob        # treat the '#', '~' and '^' characters as part of patterns for filename generation
+bindkey "^I" menu-complete
 
 ## Keybind configuration
 #
@@ -107,8 +83,12 @@ bindkey "\e[Z" reverse-menu-complete
 HISTFILE=${HOME}/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-setopt hist_ignore_dups     # ignore duplication command history list
-setopt share_history        # share command history data
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplication command history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt hist_no_store          # remove the history (fc -l) command from the history list when invoked
+#setopt share_history          # share command history data
 
 
 ## Completion configuration
@@ -122,13 +102,6 @@ compinit
 #
 autoload zed
 
-
-## Prediction configuration
-#
-#autoload predict-on
-#predict-off
-
-
 ## Alias configuration
 #
 # expand aliases before completing
@@ -138,6 +111,13 @@ setopt complete_aliases     # aliased ls needs if file/dir completions work
 alias where="command -v"
 alias j="jobs -l"
 alias vi="vim"
+
+# set LS_COLORS
+if type dircolors > /dev/null 2>&1; then
+    eval "$(dircolors)"
+elif type gdircolors > /dev/null 2>&1; then
+    eval "$(gdircolors)"
+fi
 
 case "${OSTYPE}" in
 freebsd*|darwin*)
@@ -151,12 +131,24 @@ cygwin*)
     ;;
 esac
 
+# if coreutils
+if type gls > /dev/null 2>&1; then
+    alias ls='gls --color=auto'
+fi
+
 alias la="ls -a"
 alias ll="ls -l"
 
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias diff='diff --color=auto'
+alias ip='ip --color=auto'
+
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
+
 
 ## terminal configuration
 #
@@ -167,38 +159,20 @@ screen)
 esac
 
 case "${TERM}" in
-xterm|xterm-color)
-    export LSCOLORS=exfxcxdxbxegedabagacad
-    export LS_COLORS='no=00:fi=00:di=00;34:ln=00;36:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.jpg=00;35:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:'
-    zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
-    zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-    ;;
-kterm-color)
-    stty erase '^H'
-    export LSCOLORS=exfxcxdxbxegedabagacad
-    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
-    ;;
-kterm)
+kterm*)
     stty erase '^H'
     ;;
 cons25)
     unset LANG
-    export LSCOLORS=ExFxCxdxBxegedabagacad
-    export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
     ;;
-jfbterm-color)
-    export LSCOLORS=gxFxCxdxBxegedabagacad
-    export LS_COLORS='di=01;36:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=;36;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
+*)
     ;;
 esac
 
 # set terminal title including current directory
 #
 case "${TERM}" in
-xterm|xterm-color|kterm|kterm-color)
+xterm*|kterm*)
     precmd() {
         echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
     }
@@ -206,7 +180,17 @@ xterm|xterm-color|kterm|kterm-color)
 esac
 
 # User specific aliases and functions
-stty stop undef
+if [[ -t 0 ]]; then
+  stty stop undef
+  stty start undef
+fi
+
+# enable auto-suggestions based on the history
+if [ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    . ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # change suggestion color
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
+fi
 
 ## load user .zshrc configuration file
 #
