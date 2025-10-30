@@ -63,6 +63,7 @@ filetype plugin indent on
 set t_Co=256                                 " 256色対応
 syntax on                                    " シンタックスハイライト有効
 colorscheme hybrid                           " カラースキーム設定
+set bg=dark                                  " 背景をダーク配色として扱う
 
 " 行番号とルーラー
 set number                                   " 行番号表示
