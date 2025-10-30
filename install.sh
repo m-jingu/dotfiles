@@ -165,7 +165,7 @@ for file in "$SCRIPT_DIR"/.??*; do
     
     if [[ "$skip" == true ]]; then
         log_info "Skipping: $filename"
-        ((SKIPPED_COUNT++))
+        ((++SKIPPED_COUNT))
         continue
     fi
     
@@ -179,7 +179,7 @@ for file in "$SCRIPT_DIR"/.??*; do
             existing_target=$(readlink "$link_target")
             if [[ "$existing_target" == "$file" ]]; then
                 log_info "Already linked: $filename"
-                ((SKIPPED_COUNT++))
+                ((++SKIPPED_COUNT))
                 continue
             else
                 log_warning "Removing existing link: $filename (was: $existing_target)"
@@ -195,7 +195,7 @@ for file in "$SCRIPT_DIR"/.??*; do
     # シンボリックリンクを作成
     if ln -sf "$file" "$link_target"; then
         log_success "Link created: $filename"
-        ((LINKED_COUNT++))
+        ((++LINKED_COUNT))
     else
         log_error "Failed to create link: $filename"
     fi
