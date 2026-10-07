@@ -1,0 +1,66 @@
+keybind = global:alt+;=toggle_quick_terminal
+#theme = hybrid
+theme = Nord Wave
+background-opacity = 0.85
+font-family = Monaco
+# macOS CTFontCreateForString is non-deterministic and Ghostty caches the
+# result for the process lifetime, occasionally picking the wrong CJK
+# fallback font at startup (ghostty-org/ghostty#9410). Pin JP ranges
+# explicitly to avoid the auto-fallback path entirely.
+# W4 instead of the default W3 so CJK glyphs don't look thin next to Monaco.
+# W5/W6 overshoot and make Monaco look thin by comparison.
+font-codepoint-map = U+3000-U+303F,U+3040-U+30FF,U+31F0-U+31FF,U+4E00-U+9FFF,U+F900-U+FAFF,U+FF00-U+FFEF=Hiragino Sans W4
+font-size = 16
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+copy-on-select = clipboard
+term = xterm-256color
+
+# quick-terminal周り
+quick-terminal-position = "top"
+quick-terminal-screen = "main"
+quick-terminal-size = 100%
+quick-terminal-animation-duration = 0
+quick-terminal-autohide = false
+
+## Zellij用に無効化
+# cmd+[,] pane間の移動用
+keybind = super+[=unbind
+keybind = super+]=unbind
+keybind = super+shift+[=unbind
+keybind = super+shift+]=unbind
+# cmd+t,w tabを開閉
+keybind = super+t=unbind
+keybind = super+w=unbind
+# cmd+d, shift+d paneを開く
+keybind = super+d=unbind
+keybind = super+shift+d=unbind
+# cmd+1,...,9 tab間の移動
+keybind = super+1=unbind
+keybind = super+2=unbind
+keybind = super+3=unbind
+keybind = super+4=unbind
+keybind = super+5=unbind
+keybind = super+6=unbind
+keybind = super+7=unbind
+keybind = super+8=unbind
+keybind = super+9=unbind
+keybind = super+digit_1=unbind
+keybind = super+digit_2=unbind
+keybind = super+digit_3=unbind
+keybind = super+digit_4=unbind
+keybind = super+digit_5=unbind
+keybind = super+digit_6=unbind
+keybind = super+digit_7=unbind
+keybind = super+digit_8=unbind
+keybind = super+digit_9=unbind
+
+keybind = alt+right=unbind
+keybind = alt+left=unbind
+
+## Zellij用にoptをaltとして扱う
+macos-option-as-alt = left
+
+## 画面のスクロール行数
+scrollback-limit = 1073741824

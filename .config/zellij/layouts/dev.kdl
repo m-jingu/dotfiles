@@ -1,0 +1,40 @@
+layout {
+    // The tab name is supplied from the outside by the `zdev` shell function
+    // (see ~/.zshrc.mine): it passes `--name` to `zellij action new-tab`, or
+    // injects a `name=` attribute into a temporary copy of this file when
+    // starting a brand-new session. Zellij layouts cannot expand env vars, so
+    // the name cannot be computed here. Do not add a `name=` below: it would
+    // take precedence over `--name`.
+    tab {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane split_direction="vertical" {
+            pane size="10%" {
+                command "lazygit"
+            }
+            pane size="40%" {
+                command "zsh"
+                args "-c" "yazi ."
+            }
+            pane size="50%" {
+                pane size="70%" focus=true {
+                    command "claude-team"
+                }
+                pane size="30%"
+            }
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    new_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+}

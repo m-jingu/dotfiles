@@ -4,8 +4,8 @@
 ## dotfiles セットアップスクリプト
 ## ============================================
 # このスクリプトは以下の処理を行います：
-# 1. zplugプラグインマネージャーのインストール
-# 2. ドットファイルのシンボリックリンク作成
+# 1. zsh プラグインのインストール
+# 2. ドットファイルのシンボリックリンク作成（.config 配下はファイル単位）
 # 3. 必要なディレクトリの作成
 # 4. 権限の設定
 
@@ -72,44 +72,32 @@ if [[ ! -d "$HOME" ]]; then
 fi
 
 ## ============================================
-## zplug のインストール
+## zsh プラグインのインストール
 ## ============================================
-log_info "Installing zplug plugin manager..."
+# Plain git clones sourced directly from .zshrc (zplug is no longer used).
+log_info "Installing zsh plugins..."
 
-ZPLUG_HOME="$HOME/.zplug"
+ZSH_PLUGIN_DIR="$HOME/.zsh/plugins"
+ZSH_PLUGINS=(
+    "zsh-users/zsh-autosuggestions"
+    "zsh-users/zsh-syntax-highlighting"
+)
 
-# zplugが既にインストールされているかチェック
-if [[ -d "$ZPLUG_HOME" ]]; then
-    log_warning "zplug is already installed ($ZPLUG_HOME)"
-    read -p "Reinstall? [y/N]: " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        log_info "Removing existing zplug..."
-        rm -rf "$ZPLUG_HOME"
-    else
-        log_info "Skipping zplug installation"
-    fi
+if ! command -v git >/dev/null 2>&1; then
+    error_exit "git is not installed. Please install git and run again"
 fi
 
-# zplugが存在しない場合のみインストール
-if [[ ! -d "$ZPLUG_HOME" ]]; then
-    # gitが利用可能かチェック
-    if ! command -v git >/dev/null 2>&1; then
-        error_exit "git is not installed. Please install git and run again"
-    fi
-
-    # ネットワーク接続をチェック
-    if ! ping -c 1 github.com >/dev/null 2>&1; then
-        log_warning "Cannot connect to GitHub. You might be in an offline environment"
-    fi
-
-    # zplugをクローン
-    if git clone https://github.com/zplug/zplug "$ZPLUG_HOME"; then
-        log_success "zplug installation completed"
+mkdir -p "$ZSH_PLUGIN_DIR"
+for repo in "${ZSH_PLUGINS[@]}"; do
+    name="${repo##*/}"
+    if [[ -d "$ZSH_PLUGIN_DIR/$name" ]]; then
+        log_info "Already installed: $name (update: git -C $ZSH_PLUGIN_DIR/$name pull)"
+    elif git clone --depth 1 "https://github.com/$repo" "$ZSH_PLUGIN_DIR/$name"; then
+        log_success "Plugin installed: $name"
     else
-        error_exit "Failed to install zplug"
+        log_warning "Failed to install plugin: $name"
     fi
-fi
+done
 
 ## ============================================
 ## 必要なディレクトリの作成
@@ -141,20 +129,48 @@ EXCLUDE_FILES=(
     "README.md"
     ".gitignore"
     ".gitattributes"
+    ".config"
 )
 
-# ドットファイルを検索してリンク作成
 LINKED_COUNT=0
 SKIPPED_COUNT=0
 
+# Link $1 (a file in this repo) to $2, backing up whatever is already there.
+link_file() {
+    local file=$1 link_target=$2
+    local name=${link_target#"$HOME"/}
+
+    if [[ -e "$link_target" ]] || [[ -L "$link_target" ]]; then
+        if [[ -L "$link_target" ]]; then
+            local existing_target
+            existing_target=$(readlink "$link_target")
+            if [[ "$existing_target" == "$file" ]]; then
+                log_info "Already linked: $name"
+                ((++SKIPPED_COUNT))
+                return 0
+            fi
+            log_warning "Removing existing link: $name (was: $existing_target)"
+            rm "$link_target"
+        else
+            log_warning "Backing up existing file: $name"
+            mv "$link_target" "${link_target}.backup.$(date +%Y%m%d_%H%M%S)"
+        fi
+    fi
+
+    mkdir -p "$(dirname "$link_target")"
+    if ln -s "$file" "$link_target"; then
+        log_success "Link created: $name"
+        ((++LINKED_COUNT))
+    else
+        log_error "Failed to create link: $name"
+    fi
+}
+
+# Top-level dotfiles -> ~/
 for file in "$SCRIPT_DIR"/.??*; do
-    # ファイルが存在しない場合はスキップ
     [[ ! -e "$file" ]] && continue
-    
-    # ファイル名を取得
     filename=$(basename "$file")
-    
-    # 除外リストに含まれているかチェック
+
     skip=false
     for exclude in "${EXCLUDE_FILES[@]}"; do
         if [[ "$filename" == "$exclude" ]]; then
@@ -162,44 +178,22 @@ for file in "$SCRIPT_DIR"/.??*; do
             break
         fi
     done
-    
     if [[ "$skip" == true ]]; then
         log_info "Skipping: $filename"
         ((++SKIPPED_COUNT))
         continue
     fi
-    
-    # リンク先のパス
-    link_target="$HOME/$filename"
-    
-    # 既存のファイル・リンクの処理
-    if [[ -e "$link_target" ]] || [[ -L "$link_target" ]]; then
-        if [[ -L "$link_target" ]]; then
-            # 既存のシンボリックリンクの場合
-            existing_target=$(readlink "$link_target")
-            if [[ "$existing_target" == "$file" ]]; then
-                log_info "Already linked: $filename"
-                ((++SKIPPED_COUNT))
-                continue
-            else
-                log_warning "Removing existing link: $filename (was: $existing_target)"
-                rm "$link_target"
-            fi
-        else
-            # 既存のファイル・ディレクトリの場合
-            log_warning "Backing up existing file: $filename"
-            mv "$link_target" "${link_target}.backup.$(date +%Y%m%d_%H%M%S)"
-        fi
-    fi
-    
-    # シンボリックリンクを作成
-    if ln -sf "$file" "$link_target"; then
-        log_success "Link created: $filename"
-        ((++LINKED_COUNT))
-    else
-        log_error "Failed to create link: $filename"
-    fi
+
+    link_file "$file" "$HOME/$filename"
 done
+
+# .config is linked file by file, never as a whole directory: ~/.config also
+# holds state and configs this repo does not manage.
+if [[ -d "$SCRIPT_DIR/.config" ]]; then
+    while IFS= read -r -d '' file; do
+        link_file "$file" "$HOME/.config/${file#"$SCRIPT_DIR"/.config/}"
+    done < <(find "$SCRIPT_DIR/.config" -type f ! -name .DS_Store -print0)
+fi
 
 ## ============================================
 ## 権限の設定
@@ -228,10 +222,7 @@ echo "${BOLD}Next Steps:${RESET}"
 echo "  1. Open a new terminal or run the following command:"
 echo "     ${BLUE}source ~/.zshrc${RESET}"
 echo
-echo "  2. To install zplug plugins:"
-echo "     ${BLUE}zplug install${RESET}"
-echo
-echo "  3. If you encounter issues, check backup files:"
+echo "  2. If you encounter issues, check backup files:"
 echo "     ${BLUE}ls -la ~/*.backup.*${RESET}"
 echo
 

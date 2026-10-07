@@ -9,6 +9,9 @@
 - **Zsh設定** (`.zshrc`) - シェル環境の設定
 - **Vim設定** (`.vimrc`) - エディタの設定
 - **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定
+- **Ghostty設定** (`.config/ghostty/config`) - ターミナルエミュレータ
+- **Zellij設定** (`.config/zellij/config.kdl`, `layouts/dev.kdl`) - ターミナルマルチプレクサ
+- **Yazi設定** (`.config/yazi/yazi.toml`) - ファイラ
 
 ## セットアップ
 
@@ -35,10 +38,8 @@ cd ~/dotfiles
 source ~/.zshrc
 ```
 
-4. （オプション）zplugプラグインをインストール：
-```bash
-zplug install
-```
+zsh プラグイン（zsh-autosuggestions / zsh-syntax-highlighting）は `install.sh` が
+`~/.zsh/plugins/` に git clone する。更新は `git -C ~/.zsh/plugins/<name> pull`。
 
 ## ディレクトリ構造
 
@@ -47,6 +48,12 @@ dotfiles/
 ├── .zshrc          # Zsh設定ファイル
 ├── .vimrc          # Vim設定ファイル
 ├── .minttyrc       # Mintty設定ファイル
+├── .config/        # ~/.config 配下（ファイル単位でリンク）
+│   ├── ghostty/config
+│   ├── yazi/yazi.toml
+│   └── zellij/
+│       ├── config.kdl
+│       └── layouts/dev.kdl
 ├── install.sh      # セットアップスクリプト
 └── README.md       # このファイル
 ```
@@ -61,6 +68,20 @@ dotfiles/
 - **Vim**: `~/.vimrc.local` があれば自動的に読み込みます
 
 これらのファイルを作成することで、共有設定を上書きせずに個人設定を追加できます。
+
+### `.config` の扱い
+
+`.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
+（`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
+マシン固有の設定（社内ホスト名を含む zellij レイアウトなど）はこのリポジトリに入れず、
+`~/.config` に実ファイルのまま置く。
+
+### 連携しているツール
+
+`.zshrc` は次のツールがインストールされていれば有効化する（無ければ何もしない）。
+
+- **fzf**（0.48 以降）: `Ctrl-T` ファイル、`Ctrl-R` 履歴、`Alt-C` ディレクトリ移動
+- **zoxide**: `z <キーワード>` でよく使うディレクトリへ移動、`zi` で fzf から選択
 
 ## トラブルシューティング
 
