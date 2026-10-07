@@ -10,7 +10,7 @@
 - **Vim設定** (`.vimrc`) - エディタの設定
 - **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定
 - **Ghostty設定** (`.config/ghostty/config`) - ターミナルエミュレータ
-- **Zellij設定** (`.config/zellij/config.kdl`, `layouts/dev.kdl`) - ターミナルマルチプレクサ
+- **Zellij設定** (`.config/zellij/config.kdl`, `layouts/{dev,n}.kdl`) - ターミナルマルチプレクサ
 - **Yazi設定** (`.config/yazi/yazi.toml`) - ファイラ
 
 ## セットアップ
@@ -53,7 +53,9 @@ dotfiles/
 │   ├── yazi/yazi.toml
 │   └── zellij/
 │       ├── config.kdl
-│       └── layouts/dev.kdl
+│       └── layouts/
+│           ├── dev.kdl
+│           └── n.kdl
 ├── install.sh      # セットアップスクリプト
 └── README.md       # このファイル
 ```
@@ -73,8 +75,8 @@ dotfiles/
 
 `.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
 （`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
-マシン固有の設定（社内ホスト名を含む zellij レイアウトなど）はこのリポジトリに入れず、
-`~/.config` に実ファイルのまま置く。
+このリポジトリは private。マシン固有の設定（`.zshenv`、`.zprofile`、`.zshrc.mine` など）は入れず、
+ホームディレクトリに実ファイルのまま置く。
 
 ### 連携しているツール
 
