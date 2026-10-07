@@ -5,3 +5,8 @@
 .AppleDouble
 .Spotlight-V100
 .Trashes
+
+**/.claude/settings.local.json
+
+# Per-project symlink to the OneDrive Claude-Handoff folder (M365 Copilot exchange)
+handoff
