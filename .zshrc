@@ -173,28 +173,36 @@ alias ip='ip --color=auto'
 
 
 ## ============================================
-## プラグイン設定
+## ツール連携
 ## ============================================
-# zplugの初期化
-source ~/.zplug/init.zsh
-
-# プラグインの定義
-zplug "zsh-users/zsh-autosuggestions", defer:2      # 履歴ベースの自動補完
-zplug "zsh-users/zsh-syntax-highlighting", defer:2   # シンタックスハイライト
-
-# 未インストールのプラグインがある場合、インストール確認
-if ! zplug check; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
+# fzf: Ctrl-T (file), Ctrl-R (history), Alt-C (cd). Needs fzf 0.48+.
+if type fzf > /dev/null 2>&1; then
+    source <(fzf --zsh 2>/dev/null)
 fi
 
-# プラグインの読み込み
-zplug load
+# zoxide: z <query> jumps to a frecent directory, zi picks one with fzf.
+if type zoxide > /dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
 
-# zsh-autosuggestionsの設定
+
+## ============================================
+## プラグイン設定
+## ============================================
+# Plugins are plain git clones under ~/.zsh/plugins (install.sh clones them;
+# update with `git -C ~/.zsh/plugins/<name> pull`). Sourcing them directly
+# replaces zplug, which alone took ~350ms of every shell startup.
+# zsh-syntax-highlighting must come last: it wraps every widget defined so far.
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=15'  # 提案テキストの色を白色に設定
+
+for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+    if [[ -r ${HOME}/.zsh/plugins/${plugin}/${plugin}.zsh ]]; then
+        source ${HOME}/.zsh/plugins/${plugin}/${plugin}.zsh
+    else
+        echo "zshrc: ${plugin} is not installed (run install.sh in the dotfiles repo)" >&2
+    fi
+done
+unset plugin
 
 
 ## ============================================
