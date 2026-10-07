@@ -6,7 +6,8 @@
 .Spotlight-V100
 .Trashes
 
-**/.claude/settings.local.json
+# Claude Code project state (settings, hooks, skills, local overrides)
+.claude/
 
 # Per-project symlink to the OneDrive Claude-Handoff folder (M365 Copilot exchange)
 handoff
