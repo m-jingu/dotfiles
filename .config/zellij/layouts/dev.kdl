@@ -14,9 +14,6 @@ layout {
                 command "lazygit"
             }
             pane size="40%" {
-                // No "." argument: yazi then fails to hover the current
-                // directory in the parent pane and highlights its first
-                // entry instead. The pane already starts in the right cwd.
                 command "zsh"
                 args "-c" "yazi"
             }
