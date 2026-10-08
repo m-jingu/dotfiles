@@ -14,8 +14,9 @@ layout {
                 command "lazygit"
             }
             pane size="40%" {
+                // Hover README.md when the directory has one
                 command "zsh"
-                args "-c" "yazi"
+                args "-c" "if [[ -f README.md ]]; then yazi README.md; else yazi; fi"
             }
             pane size="50%" {
                 pane size="70%" focus=true {

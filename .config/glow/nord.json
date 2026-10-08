@@ -27,16 +27,21 @@
     "bold": true
   },
   "h2": {
-    "prefix": "## "
+    "prefix": "## ",
+    "color": "#88C0D0",
+    "underline": true
   },
   "h3": {
-    "prefix": "### "
+    "prefix": "### ",
+    "color": "#81A1C1"
   },
   "h4": {
-    "prefix": "#### "
+    "prefix": "#### ",
+    "color": "#8FBCBB"
   },
   "h5": {
-    "prefix": "##### "
+    "prefix": "##### ",
+    "color": "#B48EAD"
   },
   "h6": {
     "prefix": "###### ",
