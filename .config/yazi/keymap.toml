@@ -1,0 +1,6 @@
+# Quick Look works everywhere, including inside zellij where the inline image
+# preview cannot be drawn (zellij's kitty graphics is broken, Ghostty has no sixel)
+[mgr]
+prepend_keymap = [
+	{ on = "i", run = "shell -- ~/.config/yazi/quicklook.sh %s", desc = "Quick Look selected files" },
+]
