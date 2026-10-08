@@ -102,7 +102,7 @@ suppress_preload = false
 [plugin]
 # Render Markdown with glow (piper plugin, see package.toml)
 prepend_previewers = [
-	{ url = "*.{md,markdown}", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
+	{ url = "*.{md,markdown}", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s="$HOME/.config/glow/nord.json" "$1"' },
 ]
 fetchers = [
 	# MIME-type

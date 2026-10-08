@@ -3,4 +3,5 @@
 [mgr]
 prepend_keymap = [
 	{ on = "i", run = "shell -- ~/.config/yazi/quicklook.sh %s", desc = "Quick Look selected files" },
+	{ on = "e", run = "shell --block -- ~/.config/yazi/view.sh %h", desc = "View hovered file read-only (mouse-copyable)" },
 ]
