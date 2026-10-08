@@ -195,6 +195,16 @@ if [[ -d "$SCRIPT_DIR/.config" ]]; then
     done < <(find "$SCRIPT_DIR/.config" -type f ! -name .DS_Store -print0)
 fi
 
+# Yazi plugins listed in .config/yazi/package.toml (deployed into ~/.config/yazi/plugins)
+if command -v ya >/dev/null 2>&1; then
+    log_info "Installing yazi plugins..."
+    if ya pkg install >/dev/null; then
+        log_success "Yazi plugins installed"
+    else
+        log_warning "Failed to install yazi plugins (retry: ya pkg install)"
+    fi
+fi
+
 ## ============================================
 ## 権限の設定
 ## ============================================

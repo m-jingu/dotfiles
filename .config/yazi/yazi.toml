@@ -100,6 +100,10 @@ image_bound      = [ 10000, 10000 ]
 suppress_preload = false
 
 [plugin]
+# Render Markdown with glow (piper plugin, see package.toml)
+prepend_previewers = [
+	{ url = "*.{md,markdown}", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
+]
 fetchers = [
 	# MIME-type
 	{ url = "*/",         run = "mime.dir",    prio = "high", group = "mime" },
