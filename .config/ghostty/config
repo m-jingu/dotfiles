@@ -2,15 +2,13 @@ keybind = global:alt+;=toggle_quick_terminal
 #theme = hybrid
 theme = Nord Wave
 background-opacity = 0.85
-# Menlo instead of Monaco: Monaco has no bold face, so bold text rendered as regular
-font-family = Menlo
+font-family = Monaco
 # macOS CTFontCreateForString is non-deterministic and Ghostty caches the
 # result for the process lifetime, occasionally picking the wrong CJK
 # fallback font at startup (ghostty-org/ghostty#9410). Pin JP ranges
 # explicitly to avoid the auto-fallback path entirely.
 # W4 instead of the default W3 so CJK glyphs don't look thin next to Monaco.
 # W5/W6 overshoot and make Monaco look thin by comparison.
-# (Tuned against Monaco; revisit if CJK looks off next to Menlo.)
 font-codepoint-map = U+3000-U+303F,U+3040-U+30FF,U+31F0-U+31FF,U+4E00-U+9FFF,U+F900-U+FAFF,U+FF00-U+FFEF=Hiragino Sans W4
 font-size = 16
 cursor-style = block
