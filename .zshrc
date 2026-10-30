@@ -77,7 +77,8 @@ setopt print_eight_bit      # 8ビット文字をそのまま表示
 ## 履歴設定
 ## ============================================
 # 履歴ファイルの場所とサイズ
-HISTFILE=${HOME}/.zsh_history
+HISTFILE=${HOME}/.local/state/zsh/history
+[[ -d ${HISTFILE:h} ]] || mkdir -p ${HISTFILE:h}
 HISTSIZE=10000      # メモリに保持する履歴数
 SAVEHIST=10000      # ファイルに保存する履歴数
 
@@ -123,7 +124,8 @@ fi
 fpath=(${HOME}/.zsh/functions/Completion ${fpath})
 
 # 補完システムの初期化（-uオプションでセキュリティチェックをスキップ）
-autoload -Uz compinit && compinit -u
+[[ -d ${HOME}/.cache/zsh ]] || mkdir -p ${HOME}/.cache/zsh
+autoload -Uz compinit && compinit -u -d ${HOME}/.cache/zsh/zcompdump
 
 # 補完メニューの設定
 zstyle ':completion:*' menu select interactive  # メニュー形式で補完候補を表示し、インタラクティブに選択
