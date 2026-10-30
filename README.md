@@ -7,7 +7,8 @@
 このリポジトリには、以下の開発環境の設定ファイルが含まれています：
 
 - **Zsh設定** (`.zshrc`) - シェル環境の設定
-- **Vim設定** (`.vimrc`) - エディタの設定
+- **Vim設定** (`.config/vim/vimrc`) - エディタの設定（Vim 9.1.0327 以降が `~/.config/vim` を読む）
+- **Git グローバル ignore** (`.config/git/ignore`) - git が標準で読む場所なので `core.excludesFile` は不要
 - **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定（install.sh は Windows 上でのみリンクする）
 - **Ghostty設定** (`.config/ghostty/config`) - ターミナルエミュレータ
 - **Zellij設定** (`.config/zellij/config.kdl`, `layouts/{dev,n}.kdl`) - ターミナルマルチプレクサ
@@ -46,10 +47,11 @@ zsh プラグイン（zsh-autosuggestions / zsh-syntax-highlighting）は `insta
 ```
 dotfiles/
 ├── .zshrc          # Zsh設定ファイル
-├── .vimrc          # Vim設定ファイル
 ├── .minttyrc       # Mintty設定ファイル
 ├── .config/        # ~/.config 配下（ファイル単位でリンク）
 │   ├── ghostty/config
+│   ├── git/ignore
+│   ├── vim/vimrc
 │   ├── yazi/yazi.toml
 │   └── zellij/
 │       ├── config.kdl
@@ -67,7 +69,7 @@ dotfiles/
 各設定ファイルは、個人用の設定ファイルを読み込む機能を持っています：
 
 - **Zsh**: `~/.zshrc.mine` があれば自動的に読み込みます
-- **Vim**: `~/.vimrc.local` があれば自動的に読み込みます
+- **Vim**: `~/.config/vim/vimrc.local` があれば自動的に読み込みます
 
 これらのファイルを作成することで、共有設定を上書きせずに個人設定を追加できます。
 
@@ -75,8 +77,11 @@ dotfiles/
 
 `.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
 （`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
-このリポジトリは private。マシン固有の設定（`.zshenv`、`.zprofile`、`.zshrc.mine` など）は入れず、
-ホームディレクトリに実ファイルのまま置く。
+このリポジトリは private。マシン固有の設定（`.zshenv`、`.zprofile`、`.zshrc.mine`、
+`~/.config/git/config` など）は入れず、実ファイルのまま置く。
+
+Vim のプラグイン（`~/.config/vim/bundle`）は実ディレクトリで、`vimrc` だけがリンク。
+viminfo と netrw の履歴は `~/.local/state/vim/` に書く。
 
 ### 連携しているツール
 
@@ -106,6 +111,6 @@ ls -la ~/*.backup.*
 source ~/.zshrc
 
 # Vim設定（Vim内で）
-:source ~/.vimrc
+:source $MYVIMRC
 ```
 

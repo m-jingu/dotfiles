@@ -20,23 +20,33 @@ endif
 " ファイルタイプ検出を一旦無効化（プラグイン読み込み後に有効化）
 filetype off
 
+" XDG layout: config in ~/.config/vim (read natively since Vim 9.1.0327),
+" history and netrw bookmarks in ~/.local/state/vim.
+let s:vimdir = expand('~/.config/vim')
+let s:statedir = expand('~/.local/state/vim')
+if !isdirectory(s:statedir)
+    call mkdir(s:statedir, 'p')
+endif
+let &viminfofile = s:statedir . '/viminfo'
+let g:netrw_home = s:statedir
+
 " ============================================
 " プラグイン管理（NeoBundle）
 " ============================================
 " NeoBundleの自動インストールと初期化
 if has('vim_starting')
     " NeoBundleがインストールされていない場合は自動インストール
-    if !isdirectory(expand("~/.vim/bundle/neobundle.vim/"))
+    if !isdirectory(s:vimdir . '/bundle/neobundle.vim/')
         echo "Installing neobundle..."
         " GitからNeoBundleをクローン
-        :call system("git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim")
+        call system('git clone https://github.com/Shougo/neobundle.vim ' . shellescape(s:vimdir . '/bundle/neobundle.vim'))
     endif
     " NeoBundleのランタイムパスを追加
-    set runtimepath+=~/.vim/bundle/neobundle.vim/
+    let &runtimepath .= ',' . s:vimdir . '/bundle/neobundle.vim/'
 endif
 
 " NeoBundleの初期化
-call neobundle#begin(expand('~/.vim/bundle'))
+call neobundle#begin(s:vimdir . '/bundle')
 let g:neobundle_default_git_protocol='https'  " HTTPSプロトコルを使用
 
 " プラグインの定義
@@ -337,8 +347,8 @@ endfunction
 " ============================================
 " 個人設定ファイルの読み込み
 " ============================================
-" ~/.vimrc.localが存在する場合のみ設定を読み込む
-let s:local_vimrc = expand('~/.vimrc.local')
+" ~/.config/vim/vimrc.localが存在する場合のみ設定を読み込む
+let s:local_vimrc = s:vimdir . '/vimrc.local'
 if filereadable(s:local_vimrc)
     execute 'source ' . s:local_vimrc
 endif

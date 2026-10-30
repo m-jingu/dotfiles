@@ -1,4 +1,4 @@
-# Global gitignore (referenced by core.excludesFile in git config)
+# Global gitignore (read by git from ~/.config/git/ignore; no core.excludesFile needed)
 # macOS filesystem junk
 .DS_Store
 ._*

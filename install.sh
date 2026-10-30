@@ -109,10 +109,11 @@ mkdir -p "$HOME/.zsh/functions/Completion"
 mkdir -p "$HOME/.zsh/autoload"
 
 # vim関連ディレクトリ
-mkdir -p "$HOME/.vim/bundle"
-mkdir -p "$HOME/.vim/backup"
-mkdir -p "$HOME/.vim/swap"
-mkdir -p "$HOME/.vim/undo"
+mkdir -p "$HOME/.config/vim/bundle"
+mkdir -p "$HOME/.config/vim/backup"
+mkdir -p "$HOME/.config/vim/swap"
+mkdir -p "$HOME/.config/vim/undo"
+mkdir -p "$HOME/.local/state/vim"
 
 log_success "Directory creation completed"
 
