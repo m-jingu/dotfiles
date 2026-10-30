@@ -132,6 +132,11 @@ EXCLUDE_FILES=(
     ".config"
 )
 
+# mintty is the Windows (Git Bash / WSL) terminal; its config is useless elsewhere.
+if [[ "$(uname -s)" != MINGW* ]] && [[ "$(uname -s)" != MSYS* ]] && [[ "$(uname -s)" != CYGWIN* ]]; then
+    EXCLUDE_FILES+=(".minttyrc")
+fi
+
 LINKED_COUNT=0
 SKIPPED_COUNT=0
 

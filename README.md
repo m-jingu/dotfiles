@@ -8,7 +8,7 @@
 
 - **Zsh設定** (`.zshrc`) - シェル環境の設定
 - **Vim設定** (`.vimrc`) - エディタの設定
-- **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定
+- **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定（install.sh は Windows 上でのみリンクする）
 - **Ghostty設定** (`.config/ghostty/config`) - ターミナルエミュレータ
 - **Zellij設定** (`.config/zellij/config.kdl`, `layouts/{dev,n}.kdl`) - ターミナルマルチプレクサ
 - **Yazi設定** (`.config/yazi/yazi.toml`) - ファイラ
