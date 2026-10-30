@@ -77,7 +77,7 @@ fi
 # Plain git clones sourced directly from .zshrc (zplug is no longer used).
 log_info "Installing zsh plugins..."
 
-ZSH_PLUGIN_DIR="$HOME/.zsh/plugins"
+ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
 ZSH_PLUGINS=(
     "zsh-users/zsh-autosuggestions"
     "zsh-users/zsh-syntax-highlighting"
@@ -105,8 +105,8 @@ done
 log_info "Creating necessary directories..."
 
 # zsh関連ディレクトリ
-mkdir -p "$HOME/.zsh/functions/Completion"
-mkdir -p "$HOME/.zsh/autoload"
+mkdir -p "$HOME/.local/share/zsh/functions/Completion"
+mkdir -p "$HOME/.local/share/zsh/autoload"
 
 # vim関連ディレクトリ
 mkdir -p "$HOME/.config/vim/bundle"

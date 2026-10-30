@@ -40,7 +40,7 @@ source ~/.zshrc
 ```
 
 zsh プラグイン（zsh-autosuggestions / zsh-syntax-highlighting）は `install.sh` が
-`~/.zsh/plugins/` に git clone する。更新は `git -C ~/.zsh/plugins/<name> pull`。
+`~/.local/share/zsh/plugins/` に git clone する。更新は `git -C ~/.local/share/zsh/plugins/<name> pull`。
 
 ## ディレクトリ構造
 

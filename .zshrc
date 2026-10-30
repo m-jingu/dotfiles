@@ -121,7 +121,7 @@ fi
 ## 補完設定
 ## ============================================
 # カスタム補完関数のパスを追加
-fpath=(${HOME}/.zsh/functions/Completion ${fpath})
+fpath=(${HOME}/.local/share/zsh/functions/Completion ${fpath})
 
 # 補完システムの初期化（-uオプションでセキュリティチェックをスキップ）
 [[ -d ${HOME}/.cache/zsh ]] || mkdir -p ${HOME}/.cache/zsh
@@ -191,15 +191,15 @@ fi
 ## ============================================
 ## プラグイン設定
 ## ============================================
-# Plugins are plain git clones under ~/.zsh/plugins (install.sh clones them;
-# update with `git -C ~/.zsh/plugins/<name> pull`). Sourcing them directly
+# Plugins are plain git clones under ~/.local/share/zsh/plugins (install.sh clones them;
+# update with `git -C ~/.local/share/zsh/plugins/<name> pull`). Sourcing them directly
 # replaces zplug, which alone took ~350ms of every shell startup.
 # zsh-syntax-highlighting must come last: it wraps every widget defined so far.
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=15'  # 提案テキストの色を白色に設定
 
 for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
-    if [[ -r ${HOME}/.zsh/plugins/${plugin}/${plugin}.zsh ]]; then
-        source ${HOME}/.zsh/plugins/${plugin}/${plugin}.zsh
+    if [[ -r ${HOME}/.local/share/zsh/plugins/${plugin}/${plugin}.zsh ]]; then
+        source ${HOME}/.local/share/zsh/plugins/${plugin}/${plugin}.zsh
     else
         echo "zshrc: ${plugin} is not installed (run install.sh in the dotfiles repo)" >&2
     fi
