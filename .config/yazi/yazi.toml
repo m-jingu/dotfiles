@@ -104,6 +104,11 @@ suppress_preload = false
 prepend_previewers = [
 	{ url = "*.{md,markdown}", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
 ]
+# Git status signs for the git plugin (see init.lua)
+prepend_fetchers = [
+	{ url = "*",  run = "git", group = "git" },
+	{ url = "*/", run = "git", group = "git" },
+]
 fetchers = [
 	# MIME-type
 	{ url = "*/",         run = "mime.dir",    prio = "high", group = "mime" },

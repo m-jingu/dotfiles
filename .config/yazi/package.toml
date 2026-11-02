@@ -3,5 +3,15 @@ use = "yazi-rs/plugins:piper"
 rev = "6229767"
 hash = "d1e0499cae5f3aeb628c267616d4b682"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "25d992d"
+hash = "347cc6b190eb0c2fd60513cc7ae37412"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:vcs-files"
+rev = "25d992d"
+hash = "4f2a05edce73aef2bceb2ee2c134c8f2"
+
 [flavor]
 deps = []
