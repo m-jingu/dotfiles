@@ -1,4 +1,4 @@
-keybind = global:alt+;=toggle_quick_terminal
+#keybind = global:alt+;=toggle_quick_terminal
 #theme = hybrid
 theme = Nord Wave
 background-opacity = 0.85
@@ -16,6 +16,7 @@ cursor-style-blink = false
 shell-integration-features = no-cursor
 copy-on-select = clipboard
 term = xterm-256color
+macos-titlebar-style = hidden
 
 # quick-terminal周り
 quick-terminal-position = "top"
