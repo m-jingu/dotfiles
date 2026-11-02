@@ -48,6 +48,8 @@ keybinds clear-defaults=true {
             DumpScreen "/tmp/zjcopy-screen.txt";
             Run "sh" "-c" "zjcopy --from-file /tmp/zjcopy-screen.txt" { floating true; close_on_exit true; };
         }
+        // cmd+shift+enter paneの最大化（もう一度押すと戻る）
+        bind "Shift Super Enter" { ToggleFocusFullscreen; }
         // cmd+[,] pane間の移動
         bind "Super [" { FocusPreviousPane; }
         bind "Super ]" { FocusNextPane; }
