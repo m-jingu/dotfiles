@@ -20,7 +20,11 @@ layout {
             }
             pane size="50%" {
                 pane size="70%" focus=true {
-                    command "claude-team"
+                    // Remote Control lets the Claude mobile app follow the
+                    // session. Name it after the directory (layouts cannot
+                    // expand variables, hence the zsh -c).
+                    command "zsh"
+                    args "-c" "exec claude-team --remote-control \"${PWD:t}\""
                 }
                 pane size="30%"
             }
