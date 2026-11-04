@@ -14,9 +14,11 @@ layout {
                 command "lazygit"
             }
             pane size="40%" {
-                // Hover README.md when the directory has one
+                // Hover README.md when the directory has one. imefocus
+                // (~/work/utils/imefocus) selects the Roman input mode each
+                // time this pane gains focus, so yazi gets keys, not kana.
                 command "zsh"
-                args "-c" "if [[ -f README.md ]]; then yazi README.md; else yazi; fi"
+                args "-c" "if [[ -f README.md ]]; then imefocus yazi README.md; else imefocus yazi; fi"
             }
             pane size="50%" {
                 pane size="70%" focus=true {
