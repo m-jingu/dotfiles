@@ -66,6 +66,12 @@ filetype plugin indent on
 " ============================================
 " Colors
 set t_Co=256                                 " 256-color terminal
+" Truecolor when the terminal says it supports it (Ghostty sets COLORTERM),
+" so hybrid uses its GUI palette, as Neovim does. Over ssh COLORTERM is
+" usually not passed on, and the 256-color palette is used instead.
+if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $COLORTERM ==# '24bit')
+    set termguicolors
+endif
 syntax on
 colorscheme hybrid
 set bg=dark
