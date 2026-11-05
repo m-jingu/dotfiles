@@ -31,6 +31,11 @@ rbenv() {
 	rbenv "$@"
 }
 
+# Rust: Homebrew's rustup is keg-only and ships the cargo/rustc proxies in its
+# own bin. ~/.cargo/bin (added by ~/.cargo/env below) keeps only binaries from
+# `cargo install`.
+[[ -d /opt/homebrew/opt/rustup/bin ]] && path=(/opt/homebrew/opt/rustup/bin $path)
+
 # Each tool may be missing on a fresh Mac; skip it quietly then.
 for _f in /opt/homebrew/share/google-cloud-sdk/{path,completion}.zsh.inc "$HOME/.cargo/env"; do
 	[[ -r "$_f" ]] && source "$_f"
