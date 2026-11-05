@@ -2,7 +2,6 @@
 ## Aliases
 ## ============================================
 # Basic commands
-alias where="command -v"  # Show where a command resolves to
 alias j="jobs -l"         # List jobs with their PIDs
 alias vi="vim"
 
@@ -34,8 +33,10 @@ alias la="ls -a"    # Include hidden files
 alias ll="ls -lh"   # Long listing with human-readable sizes
 alias lla="ls -lha"
 
-# Tree view
-alias tree='eza --tree --icons auto'
+# Tree view with eza; plain tree (if installed) is left alone otherwise
+if type eza > /dev/null 2>&1; then
+    alias tree='eza --tree --icons auto'
+fi
 
 # Color output for search, diff and ip
 alias grep='grep --color=auto'
