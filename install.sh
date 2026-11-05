@@ -222,17 +222,11 @@ if [[ -d "$SCRIPT_DIR/.config" ]]; then
     done < <(find "$SCRIPT_DIR/.config" -type f ! -name .DS_Store -print0)
 fi
 
-# zsh reads its rc files from $ZDOTDIR (~/.config/zsh) when /etc/zshenv sets it,
-# and from ~ otherwise. Link .zshrc into both places; the modules it sources are
-# under .config/zsh and are linked above.
-link_file "$SCRIPT_DIR/.zshrc" "$HOME/.config/zsh/.zshrc"
-
-# On macOS the env files above are only read when /etc/zshenv points zsh there.
-# Editing /etc needs root, so only tell the user what to add.
-if [[ "$(uname -s)" == Darwin ]] && ! grep -q 'ZDOTDIR' /etc/zshenv 2>/dev/null; then
-    log_warning "/etc/zshenv does not set ZDOTDIR; zsh will not read ~/.config/zsh/.zshenv"
-    echo "  Add this with: sudo vi /etc/zshenv"
-    echo '    export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"'
+# zsh now reads its rc files from ~/.config/zsh (~/.zshenv sets ZDOTDIR), so
+# a ~/.zshrc left by an older layout of this repo is never read. Remove it.
+if [[ -L "$HOME/.zshrc" ]] && [[ "$(readlink "$HOME/.zshrc")" == "$SCRIPT_DIR/.zshrc" ]]; then
+    log_warning "Removing old link: .zshrc (moved to .config/zsh/.zshrc)"
+    rm "$HOME/.zshrc"
 fi
 
 # Yazi plugins listed in .config/yazi/package.toml (deployed into ~/.config/yazi/plugins)

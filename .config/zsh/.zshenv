@@ -1,5 +1,5 @@
 # ~/.config/zsh/.zshenv (macOS only; install.sh does not link it elsewhere).
-# zsh reads it because /etc/zshenv sets ZDOTDIR=~/.config/zsh.
+# Sourced from ~/.zshenv, which sets ZDOTDIR=~/.config/zsh.
 
 # ---------- XDG base directories ----------
 # Centralizes config/cache/data locations

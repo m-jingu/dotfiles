@@ -117,8 +117,8 @@ autoload zed  # zedエディタを読み込み（zsh -f で起動可能）
 # Modular Config Files
 # =========================================================
 
-# The modules live next to this file in $ZDOTDIR (~/.config/zsh). Fall back to
-# that path where ZDOTDIR is not set and zsh read this file as ~/.zshrc.
+# The modules live next to this file in $ZDOTDIR (~/.config/zsh, set by
+# ~/.zshenv). The fallback covers a shell started with ZDOTDIR unset.
 _zmod_dir="${ZDOTDIR:-$HOME/.config/zsh}"
 
 # fzf configuration
