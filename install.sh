@@ -194,11 +194,31 @@ for file in "$SCRIPT_DIR"/.??*; do
     link_file "$file" "$HOME/$filename"
 done
 
+# Files under .config that only make sense on macOS (Homebrew paths, path_helper,
+# pyenv/rbenv and other Mac-only tools). Not linked on Linux and others.
+MACOS_ONLY=(
+    "zsh/.zshenv"
+    "zsh/.zprofile"
+    "zsh/macos.zsh"
+)
+
 # .config is linked file by file, never as a whole directory: ~/.config also
 # holds state and configs this repo does not manage.
 if [[ -d "$SCRIPT_DIR/.config" ]]; then
     while IFS= read -r -d '' file; do
-        link_file "$file" "$HOME/.config/${file#"$SCRIPT_DIR"/.config/}"
+        rel="${file#"$SCRIPT_DIR"/.config/}"
+        if [[ "$(uname -s)" != Darwin ]]; then
+            skip=false
+            for mac_only in "${MACOS_ONLY[@]}"; do
+                [[ "$rel" == "$mac_only" ]] && skip=true && break
+            done
+            if [[ "$skip" == true ]]; then
+                log_info "Skipping (macOS only): .config/$rel"
+                ((++SKIPPED_COUNT))
+                continue
+            fi
+        fi
+        link_file "$file" "$HOME/.config/$rel"
     done < <(find "$SCRIPT_DIR/.config" -type f ! -name .DS_Store -print0)
 fi
 
@@ -206,6 +226,14 @@ fi
 # and from ~ otherwise. Link .zshrc into both places; the modules it sources are
 # under .config/zsh and are linked above.
 link_file "$SCRIPT_DIR/.zshrc" "$HOME/.config/zsh/.zshrc"
+
+# On macOS the env files above are only read when /etc/zshenv points zsh there.
+# Editing /etc needs root, so only tell the user what to add.
+if [[ "$(uname -s)" == Darwin ]] && ! grep -q 'ZDOTDIR' /etc/zshenv 2>/dev/null; then
+    log_warning "/etc/zshenv does not set ZDOTDIR; zsh will not read ~/.config/zsh/.zshenv"
+    echo "  Add this with: sudo vi /etc/zshenv"
+    echo '    export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"'
+fi
 
 # Yazi plugins listed in .config/yazi/package.toml (deployed into ~/.config/yazi/plugins)
 if command -v ya >/dev/null 2>&1; then

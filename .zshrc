@@ -45,7 +45,7 @@ setopt print_eight_bit      # 8ビット文字をそのまま表示
 ## 履歴設定
 ## ============================================
 # 履歴ファイルの場所とサイズ
-HISTFILE="$XDG_STATE_HOME/zsh/history"
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 [[ -d ${HISTFILE:h} ]] || mkdir -p ${HISTFILE:h}
 HISTSIZE=100000      # メモリに保持する履歴数
 SAVEHIST=100000      # ファイルに保存する履歴数
@@ -79,9 +79,9 @@ fi
 fpath=(${HOME}/.local/share/zsh/functions/Completion ${fpath})
 
 # 補完システムの初期化
-[[ -d $XDG_CACHE_HOME/zsh ]] || mkdir -p $XDG_CACHE_HOME/zsh
+[[ -d ${XDG_CACHE_HOME:-$HOME/.cache}/zsh ]] || mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
 autoload -Uz compinit
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 
 # 補完メニューの設定
 zstyle ':completion:*' menu select interactive  # メニュー形式で補完候補を表示し、インタラクティブに選択
@@ -146,7 +146,11 @@ source "$_zmod_dir/plugins.zsh"
 ## ユーザー設定ファイルの読み込み
 ## ============================================
 # 個人用の設定ファイルがあれば読み込む（このファイルより優先）
-# Machine-local settings, kept out of this repo. Older setups have it in $HOME.
+# macOS-specific settings (pyenv/rbenv, gcloud, zellij and yazi helpers).
+[[ "$OSTYPE" == darwin* && -f "$_zmod_dir/macos.zsh" ]] && source "$_zmod_dir/macos.zsh"
+
+# Optional settings for this machine only, kept out of the repo (secrets etc.).
+# Older setups have it in $HOME.
 if [[ -f "$_zmod_dir/.zshrc.mine" ]]; then
     source "$_zmod_dir/.zshrc.mine"
 elif [[ -f "$HOME/.zshrc.mine" ]]; then
