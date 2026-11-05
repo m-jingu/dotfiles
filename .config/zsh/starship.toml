@@ -2,22 +2,24 @@
 
 add_newline = false
 
-format = "$directory$os$git_branch$git_status$nodejs$rust$golang$php $character"
+format = "$directory${custom.apple}$hostname$git_branch$git_status$nodejs$rust$golang$php $character"
 right_format = "$time"
 
-[os]
-disabled = false
-format = "[$symbol](#blue) "
+# Apple logo on macOS; the host name everywhere else, so a remote shell is
+# easy to tell apart. Both sit right after the path, where zjcopy expects them.
+[custom.apple]
+os     = "macos"
+when   = true
+symbol = ""
+format = "[$symbol](blue) "
 
-[os.symbols]
-Ubuntu     = "󰕈"
-Artix      = "󰣇"
-Arch       = "󰣇"
-CachyOS    = "󰣇"
-Macos      = ""
-Kali       = ""
-RockyLinux = ""
-Amazon     = ""
+# Hidden on macOS by keying on __CF_USER_TEXT_ENCODING, which macOS sets in
+# every process (CoreFoundation adds it back even if removed) and Linux lacks.
+# detect_env_vars needs one positive entry, hence HOME.
+[hostname]
+ssh_only        = false
+detect_env_vars = ["HOME", "!__CF_USER_TEXT_ENCODING"]
+format          = "[$hostname](bold yellow) "
 
 # Fish-style path: every directory but the last is shortened to its first
 # letter (~/w/i/terminal-setup). Repo-relative truncation is off so the path
