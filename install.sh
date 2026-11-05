@@ -80,7 +80,8 @@ log_info "Installing zsh plugins..."
 ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
 ZSH_PLUGINS=(
     "zsh-users/zsh-autosuggestions"
-    "zsh-users/zsh-syntax-highlighting"
+    "zsh-users/zsh-history-substring-search"
+    "zdharma-continuum/fast-syntax-highlighting"
 )
 
 if ! command -v git >/dev/null 2>&1; then
@@ -201,6 +202,11 @@ if [[ -d "$SCRIPT_DIR/.config" ]]; then
     done < <(find "$SCRIPT_DIR/.config" -type f ! -name .DS_Store -print0)
 fi
 
+# zsh reads its rc files from $ZDOTDIR (~/.config/zsh) when /etc/zshenv sets it,
+# and from ~ otherwise. Link .zshrc into both places; the modules it sources are
+# under .config/zsh and are linked above.
+link_file "$SCRIPT_DIR/.zshrc" "$HOME/.config/zsh/.zshrc"
+
 # Yazi plugins listed in .config/yazi/package.toml (deployed into ~/.config/yazi/plugins)
 if command -v ya >/dev/null 2>&1; then
     log_info "Installing yazi plugins..."
@@ -236,7 +242,7 @@ echo "  - Skipped: $SKIPPED_COUNT files"
 echo
 echo "${BOLD}Next Steps:${RESET}"
 echo "  1. Open a new terminal or run the following command:"
-echo "     ${BLUE}source ~/.zshrc${RESET}"
+echo "     ${BLUE}exec zsh${RESET}"
 echo
 echo "  2. If you encounter issues, check backup files:"
 echo "     ${BLUE}ls -la ~/*.backup.*${RESET}"

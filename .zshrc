@@ -12,39 +12,6 @@ esac
 
 
 ## ============================================
-## プロンプト設定
-## ============================================
-# 色を使用できるようにする
-autoload colors
-colors
-
-# プロンプト設定（ユーザー権限によって色を変更）
-case ${UID} in
-0)
-    # rootユーザー: 赤色でユーザー名@ホスト名を表示
-    PROMPT="%{${fg[red]}%}%n%{${fg[yellow]}%}@%m%{${reset_color}%}# "
-    PROMPT2="%{${fg[cyan]}%}%_%{${reset_color}%}# "
-    ;;
-*)
-    # 一般ユーザー: 黄色でユーザー名@ホスト名を表示
-    PROMPT="%{${fg[yellow]}%}%n@%m%{${reset_color}%}$ "
-    PROMPT2="%{${fg[cyan]}%}%_%{${reset_color}%}$ "
-    ;;
-esac
-# 右側プロンプト: カレントディレクトリと時刻を表示
-RPROMPT="%{${fg[blue]}%}[%~]%{${reset_color}%} [%*]"
-# スペルチェックプロンプト
-SPROMPT="%r is correct? [n,y,a,e]: " 
-
-# プロンプトのリセット関数（Enter押下時にプロンプトを再描画）
-re-prompt() {
-    zle .reset-prompt
-    zle .accept-line
-}
-zle -N accept-line re-prompt
-
-
-## ============================================
 ## シェルオプション設定
 ## ============================================
 
@@ -66,6 +33,7 @@ setopt extended_glob         # '#', '~', '^'をパターンとして使用可能
 setopt nonomatch             # パターンマッチ失敗時のエラーメッセージを非表示
 
 # === その他の動作設定 ===
+setopt nobeep
 setopt notify               # バックグラウンドジョブの状態を即座に通知
 setopt numericglobsort      # ファイル名を数値的にソート
 setopt promptsubst          # プロンプト内でコマンド置換を有効化
@@ -77,32 +45,19 @@ setopt print_eight_bit      # 8ビット文字をそのまま表示
 ## 履歴設定
 ## ============================================
 # 履歴ファイルの場所とサイズ
-HISTFILE=${HOME}/.local/state/zsh/history
+HISTFILE="$XDG_STATE_HOME/zsh/history"
 [[ -d ${HISTFILE:h} ]] || mkdir -p ${HISTFILE:h}
-HISTSIZE=10000      # メモリに保持する履歴数
-SAVEHIST=10000      # ファイルに保存する履歴数
+HISTSIZE=100000      # メモリに保持する履歴数
+SAVEHIST=100000      # ファイルに保存する履歴数
 
 # 履歴管理オプション
-setopt hist_expire_dups_first  # 履歴が上限に達した場合、重複を優先的に削除
+setopt append_history
+setopt share_history            # 複数のzshセッション間で履歴を共有
 setopt hist_ignore_dups         # 直前のコマンドと同じ場合は履歴に追加しない
 setopt hist_ignore_space        # スペースで始まるコマンドは履歴に追加しない
+setopt hist_expire_dups_first  # 履歴が上限に達した場合、重複を優先的に削除
 setopt hist_verify              # 履歴展開したコマンドを実行前に確認
 setopt hist_no_store            # historyコマンド（fc -l）を履歴に保存しない
-#setopt share_history            # 複数のzshセッション間で履歴を共有
-
-
-## ============================================
-## キーバインド設定
-## ============================================
-# 履歴検索機能の読み込み
-autoload history-search-end
-zle -N history-beginning-search-backward-end history-search-end
-zle -N history-beginning-search-forward-end history-search-end
-
-# 履歴検索のキーバインド
-bindkey "^p" history-beginning-search-backward-end  # Ctrl+P: 前方一致で履歴を遡る
-bindkey "^n" history-beginning-search-forward-end   # Ctrl+N: 前方一致で履歴を進む
-bindkey "\e[Z" reverse-menu-complete                # Shift+Tab: 補完メニューを逆方向に移動
 
 
 ## ============================================
@@ -123,55 +78,19 @@ fi
 # カスタム補完関数のパスを追加
 fpath=(${HOME}/.local/share/zsh/functions/Completion ${fpath})
 
-# 補完システムの初期化（-uオプションでセキュリティチェックをスキップ）
-[[ -d ${HOME}/.cache/zsh ]] || mkdir -p ${HOME}/.cache/zsh
-autoload -Uz compinit && compinit -u -d ${HOME}/.cache/zsh/zcompdump
+# 補完システムの初期化
+[[ -d $XDG_CACHE_HOME/zsh ]] || mkdir -p $XDG_CACHE_HOME/zsh
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
 # 補完メニューの設定
 zstyle ':completion:*' menu select interactive  # メニュー形式で補完候補を表示し、インタラクティブに選択
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  # 補完候補にLS_COLORSの色を適用
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 # プロセス補完の設定
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-
-
-## ============================================
-## エイリアス設定
-## ============================================
-# 基本コマンド
-alias where="command -v"  # コマンドのパスを表示
-alias j="jobs -l"          # ジョブ一覧を詳細表示
-alias vi="vim"             # viをvimにエイリアス
-
-# OS別のlsエイリアス設定
-case "${OSTYPE}" in
-freebsd*|darwin*)
-    alias ls="ls -G"              # macOS/FreeBSD: カラー表示
-    ;;
-linux*|msys*)
-    alias ls="ls -F --color=auto" # Linux: ファイルタイプ表示 + カラー
-    ;;
-cygwin*)
-    alias ls="ls --color=auto"    # Cygwin: カラー表示
-    ;;
-esac
-
-# coreutilsのglsがインストールされている場合は優先使用
-if type gls > /dev/null 2>&1; then
-    alias ls='gls --color=auto'
-fi
-
-# lsの便利なエイリアス
-alias la="ls -a"   # 隠しファイルも表示
-alias ll="ls -l"   # 詳細表示
-
-# 検索・差分コマンドのカラー表示
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias diff='diff --color=auto'
-alias ip='ip --color=auto'
 
 
 ## ============================================
@@ -189,70 +108,48 @@ fi
 
 
 ## ============================================
-## プラグイン設定
-## ============================================
-# Plugins are plain git clones under ~/.local/share/zsh/plugins (install.sh clones them;
-# update with `git -C ~/.local/share/zsh/plugins/<name> pull`). Sourcing them directly
-# replaces zplug, which alone took ~350ms of every shell startup.
-# zsh-syntax-highlighting must come last: it wraps every widget defined so far.
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=15'  # 提案テキストの色を白色に設定
-
-for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
-    if [[ -r ${HOME}/.local/share/zsh/plugins/${plugin}/${plugin}.zsh ]]; then
-        source ${HOME}/.local/share/zsh/plugins/${plugin}/${plugin}.zsh
-    else
-        echo "zshrc: ${plugin} is not installed (run install.sh in the dotfiles repo)" >&2
-    fi
-done
-unset plugin
-
-
-## ============================================
-## ターミナル設定
-## ============================================
-# screenセッションの場合はTERMをxtermに設定
-case "${TERM}" in
-screen)
-    TERM=xterm
-    ;;
-esac
-
-# ターミナルタイプ別の設定
-case "${TERM}" in
-kterm*)
-    stty erase '^H'  # ktermではバックスペースを^Hに設定
-    ;;
-cons25)
-    unset LANG       # cons25ではLANGを無効化
-    ;;
-*)
-    ;;
-esac
-
-# ターミナルタイトルにカレントディレクトリを含める
-case "${TERM}" in
-xterm*|kterm*)
-    precmd() {
-        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-    }
-    ;;
-esac
-
-# 制御文字の設定（Ctrl+S/Ctrl+Qによるフロー制御を無効化）
-if [[ -t 0 ]]; then
-  stty stop undef
-  stty start undef
-fi
-
-
-## ============================================
 ## zshエディタ
 ## ============================================
 autoload zed  # zedエディタを読み込み（zsh -f で起動可能）
+
+
+# =========================================================
+# Modular Config Files
+# =========================================================
+
+# The modules live next to this file in $ZDOTDIR (~/.config/zsh). Fall back to
+# that path where ZDOTDIR is not set and zsh read this file as ~/.zshrc.
+_zmod_dir="${ZDOTDIR:-$HOME/.config/zsh}"
+
+# fzf configuration
+source "$_zmod_dir/fzf.zsh"
+
+# Aliases
+source "$_zmod_dir/aliases.zsh"
+
+# Custom keybindings
+source "$_zmod_dir/bindings.zsh"
+
+# Prompt/theme
+source "$_zmod_dir/prompt.zsh"
+
+# Terminal
+source "$_zmod_dir/terminal.zsh"
+
+# Plugins and plugin manager. Keep this last: zsh-autosuggestions and
+# fast-syntax-highlighting wrap the widgets that exist when they load, so a
+# widget defined afterwards (e.g. accept-line in prompt.zsh) would escape them.
+source "$_zmod_dir/plugins.zsh"
 
 
 ## ============================================
 ## ユーザー設定ファイルの読み込み
 ## ============================================
 # 個人用の設定ファイルがあれば読み込む（このファイルより優先）
-[ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
+# Machine-local settings, kept out of this repo. Older setups have it in $HOME.
+if [[ -f "$_zmod_dir/.zshrc.mine" ]]; then
+    source "$_zmod_dir/.zshrc.mine"
+elif [[ -f "$HOME/.zshrc.mine" ]]; then
+    source "$HOME/.zshrc.mine"
+fi
+unset _zmod_dir
