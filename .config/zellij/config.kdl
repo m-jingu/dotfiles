@@ -235,7 +235,8 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
-        bind "Ctrl q" { Quit; }
+        // Ctrl q (Quit) is left unbound: it is too easy to hit, and zsh uses it for
+        // push-line. Quit with `zellij kill-session` or by closing every tab.
     }
     shared_except "locked" "move" {
         bind "Ctrl h" { SwitchToMode "move"; }
