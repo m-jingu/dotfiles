@@ -27,19 +27,8 @@ export PARALLEL_HOME="$HOME/.config/parallel"
 export ANSIBLE_HOME="$HOME/.local/share/ansible"
 export BUNDLE_USER_HOME="$HOME/.local/share/bundle"
 
-# ---------- Editor ----------
-# Default editor used by git, crontab, etc.
-export EDITOR="vim"
-export VISUAL="vim"
-
-# ---------- Pager ----------
-if command -v bat >/dev/null 2>&1; then
-  export MANPAGER="bat -l man -p"
-elif command -v batcat >/dev/null 2>&1; then
-  export MANPAGER="batcat -l man -p"
-fi
-
 # ---------- PATH ----------
+# Set before the editor and pager checks below, which look for Homebrew tools.
 # Keep PATH free of duplicates: nested shells (zellij panes, scripts) source
 # this file again on top of an already populated PATH.
 typeset -U path PATH
@@ -51,6 +40,23 @@ export PATH="$HOME/.local/bin:$PATH"
 # reorder PATH afterwards through path_helper; .zprofile restores the order.
 if [[ "$OSTYPE" == darwin* ]]; then
   path=(/opt/homebrew/bin /opt/homebrew/sbin /opt/homebrew/opt/unzip/bin $path)
+fi
+
+# ---------- Editor ----------
+# Default editor used by git, crontab, yazi, etc.: Neovim on macOS when it is
+# installed, plain Vim elsewhere (Linux hosts keep .config/vim/vimrc).
+if [[ "$OSTYPE" == darwin* ]] && (( $+commands[nvim] )); then
+  export EDITOR="nvim"
+else
+  export EDITOR="vim"
+fi
+export VISUAL="$EDITOR"
+
+# ---------- Pager ----------
+if command -v bat >/dev/null 2>&1; then
+  export MANPAGER="bat -l man -p"
+elif command -v batcat >/dev/null 2>&1; then
+  export MANPAGER="batcat -l man -p"
 fi
 
 # ---------- Starship ----------

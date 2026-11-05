@@ -3,7 +3,12 @@
 ## ============================================
 # Basic commands
 alias j="jobs -l"         # List jobs with their PIDs
-alias vi="vim"
+# vi and vim open $EDITOR: Neovim on macOS, Vim elsewhere (see .zshenv)
+if [[ "$EDITOR" == nvim ]]; then
+    alias vi="nvim" vim="nvim"
+else
+    alias vi="vim"
+fi
 
 # ls: pick the color flag the platform's ls understands
 case "${OSTYPE}" in
