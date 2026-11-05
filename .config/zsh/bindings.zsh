@@ -1,6 +1,7 @@
 ## ============================================
 ## キーバインド設定
 ## ============================================
+# The emacs keymap is selected at the top of .zshrc.
 # 履歴検索機能の読み込み
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end

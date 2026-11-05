@@ -12,6 +12,16 @@ esac
 
 
 ## ============================================
+## キーマップ
+## ============================================
+# Use the emacs keymap explicitly. zsh picks viins on its own when $EDITOR or
+# $VISUAL contains "vi" (EDITOR=vim), which disables Ctrl+A/E/K and friends.
+# Must come before every other bindkey (fzf, modules, plugins): bindkey binds
+# into the current main keymap, and -e switches main to another keymap.
+bindkey -e
+
+
+## ============================================
 ## シェルオプション設定
 ## ============================================
 
