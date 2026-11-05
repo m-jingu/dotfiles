@@ -6,7 +6,8 @@ Personal shell and editor configuration for macOS and Linux.
 
 - **Zsh** (`.zshenv` and `.config/zsh/`): `~/.zshenv` only sets `ZDOTDIR=~/.config/zsh`; everything else lives in `~/.config/zsh/`
 - **Starship** (`.config/zsh/starship.toml`): prompt. Without starship, zsh falls back to a plain prompt with the same layout
-- **Vim** (`.config/vim/vimrc`): Vim 9.1.0327 and later read `~/.config/vim` natively
+- **Vim** (`.config/vim/vimrc`): Vim 9.1.0327 and later read `~/.config/vim` natively. Used on Linux
+- **Neovim** (`.config/nvim/`): macOS only. A port of the vimrc with a few plugins managed by the built-in `vim.pack` (Neovim 0.12+); `EDITOR`, `vi` and `vim` point to `nvim` on macOS when it is installed
 - **Git global ignore** (`.config/git/ignore`): git reads this path by default, so no `core.excludesFile` is needed
 - **Mintty** (`.minttyrc`): Windows terminal; `install.sh` links it on Windows (MSYS / Cygwin) only
 - **Ghostty** (`.config/ghostty/config`): terminal emulator (macOS)
@@ -56,6 +57,7 @@ dotfiles/
 ├── .config/        # Linked into ~/.config file by file
 │   ├── ghostty/config
 │   ├── git/ignore
+│   ├── nvim/       # init.lua, nvim-pack-lock.json (macOS only)
 │   ├── vim/vimrc
 │   ├── yazi/       # yazi.toml, keymap.toml, init.lua, package.toml, helper scripts
 │   ├── zellij/
@@ -83,6 +85,7 @@ Machine-specific settings go in files that are read if present and are not track
 
 - **Zsh**: `~/.config/zsh/.zshrc.mine` is sourced last (secrets and anything for one machine only)
 - **Vim**: `~/.config/vim/vimrc.local` is sourced at the end of `vimrc`
+- **Neovim**: `~/.config/nvim/local.lua` is run at the end of `init.lua`
 
 They extend or override the shared settings without editing them.
 
@@ -90,8 +93,8 @@ They extend or override the shared settings without editing them.
 
 Files under `.config` are linked one by one rather than as whole directories, because
 `~/.config` also holds configs and state this repository does not manage.
-The files listed in `MACOS_ONLY` in `install.sh` (zsh's `.zprofile` and `macos.zsh`) are linked
-on macOS only. Machine-specific files (`~/.config/zsh/.zshrc.mine`, `~/.config/git/config`, ...)
+The entries listed in `MACOS_ONLY` in `install.sh` (`nvim/`, zsh's `.zprofile` and `macos.zsh`)
+are linked on macOS only. Machine-specific files (`~/.config/zsh/.zshrc.mine`, `~/.config/git/config`, ...)
 stay out of the repository as plain files.
 
 Vim plugins (`~/.config/vim/bundle`) are a real directory; only `vimrc` is a link.
@@ -124,6 +127,6 @@ After changing the configuration:
 # Zsh
 exec zsh
 
-# Vim (inside Vim)
+# Vim / Neovim (inside the editor)
 :source $MYVIMRC
 ```
