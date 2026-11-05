@@ -6,7 +6,7 @@
 
 このリポジトリには、以下の開発環境の設定ファイルが含まれています：
 
-- **Zsh設定** (`.zshrc`) - シェル環境の設定
+- **Zsh設定** (`.zshenv` と `.config/zsh/`) - シェル環境の設定。`~/.zshenv` は `ZDOTDIR=~/.config/zsh` を設定するだけの起点で、残りはすべて `~/.config/zsh/` に置く
 - **Vim設定** (`.config/vim/vimrc`) - エディタの設定（Vim 9.1.0327 以降が `~/.config/vim` を読む）
 - **Git グローバル ignore** (`.config/git/ignore`) - git が標準で読む場所なので `core.excludesFile` は不要
 - **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定（install.sh は Windows 上でのみリンクする）
@@ -36,28 +36,36 @@ cd ~/dotfiles
 
 3. 新しいターミナルを開くか、設定を再読み込み：
 ```bash
-source ~/.zshrc
+exec zsh
 ```
 
-zsh プラグイン（zsh-autosuggestions / zsh-syntax-highlighting）は `install.sh` が
-`~/.local/share/zsh/plugins/` に git clone する。更新は `git -C ~/.local/share/zsh/plugins/<name> pull`。
+zsh プラグイン（zsh-autosuggestions / zsh-history-substring-search / fast-syntax-highlighting）は
+`install.sh` が `~/.local/share/zsh/plugins/` に git clone する（無ければ zsh の起動時にも clone する）。
+更新は `zplugin-update`。
 
 ## ディレクトリ構造
 
 ```
 dotfiles/
-├── .zshrc          # Zsh設定ファイル
+├── .zshenv         # 起点: ZDOTDIR を設定し ~/.config/zsh/.zshenv を読む
 ├── .minttyrc       # Mintty設定ファイル
 ├── .config/        # ~/.config 配下（ファイル単位でリンク）
 │   ├── ghostty/config
 │   ├── git/ignore
 │   ├── vim/vimrc
 │   ├── yazi/yazi.toml
-│   └── zellij/
-│       ├── config.kdl
-│       └── layouts/
-│           ├── dev.kdl
-│           └── n.kdl
+│   ├── zellij/
+│   │   ├── config.kdl
+│   │   └── layouts/
+│   │       ├── dev.kdl
+│   │       └── n.kdl
+│   └── zsh/
+│       ├── .zshenv     # 環境変数・PATH（macOS のみ）
+│       ├── .zprofile   # path_helper 後の PATH の並べ直し（macOS のみ）
+│       ├── .zshrc      # 対話シェルの設定。下のモジュールを読む
+│       ├── macos.zsh   # pyenv/rbenv・gcloud・rustup、zdev/za/y（macOS のみ）
+│       ├── {aliases,bindings,fzf,plugins,prompt,terminal}.zsh
+│       └── starship.toml
 ├── install.sh      # セットアップスクリプト
 └── README.md       # このファイル
 ```
@@ -68,7 +76,7 @@ dotfiles/
 
 各設定ファイルは、個人用の設定ファイルを読み込む機能を持っています：
 
-- **Zsh**: `~/.zshrc.mine` があれば自動的に読み込みます
+- **Zsh**: `~/.config/zsh/.zshrc.mine` があれば最後に読み込みます（git には入れない。シークレットなどこのマシンだけの設定用）
 - **Vim**: `~/.config/vim/vimrc.local` があれば自動的に読み込みます
 
 これらのファイルを作成することで、共有設定を上書きせずに個人設定を追加できます。
@@ -77,15 +85,15 @@ dotfiles/
 
 `.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
 （`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
-このリポジトリは private。マシン固有の設定（`.zshenv`、`.zprofile`、`.zshrc.mine`、
-`~/.config/git/config` など）は入れず、実ファイルのまま置く。
+このリポジトリは private。`install.sh` の `MACOS_ONLY` に挙げたファイル（zsh の `.zshenv`・`.zprofile`・`macos.zsh`）は
+macOS でだけリンクする。マシン固有の設定（`~/.config/zsh/.zshrc.mine`、`~/.config/git/config` など）は入れず、実ファイルのまま置く。
 
 Vim のプラグイン（`~/.config/vim/bundle`）は実ディレクトリで、`vimrc` だけがリンク。
 viminfo と netrw の履歴は `~/.local/state/vim/` に書く。
 
 ### 連携しているツール
 
-`.zshrc` は次のツールがインストールされていれば有効化する（無ければ何もしない）。
+`.config/zsh/.zshrc` は次のツールがインストールされていれば有効化する（無ければ何もしない）。
 
 - **fzf**（0.48 以降）: `Ctrl-T` ファイル、`Ctrl-R` 履歴、`Alt-C` ディレクトリ移動
 - **zoxide**: `z <キーワード>` でよく使うディレクトリへ移動、`zi` で fzf から選択
@@ -108,7 +116,7 @@ ls -la ~/*.backup.*
 
 ```bash
 # Zsh設定
-source ~/.zshrc
+exec zsh
 
 # Vim設定（Vim内で）
 :source $MYVIMRC
