@@ -51,12 +51,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
   path=(/opt/homebrew/bin /opt/homebrew/sbin /opt/homebrew/opt/unzip/bin $path)
 fi
 
-# Trust an internal CA so Node (Claude Code MCP over https) can verify
-# an internal server certificate.
-# Skipped on Macs without the certificate, where Node would warn on every run.
-[[ -r "$HOME/.config/certs/internal-ca.pem" ]] &&
-  export NODE_EXTRA_CA_CERTS="$HOME/.config/certs/internal-ca.pem"
-
 # ---------- Starship ----------
 export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
 
