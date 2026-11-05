@@ -1,42 +1,3 @@
-// Earlier approach, kept for reference: patch the default keybinds instead of
-// replacing them (superseded by clear-defaults=true below).
-/*
-keybinds {
-    shared {
-        // These mode keys clash with emacs-style cursor keys in the shell
-        unbind "Ctrl n" "Ctrl p" "Ctrl b" "Ctrl h" "Ctrl t" "Ctrl s" "Ctrl o" "Ctrl g"
-        // Defaults that clash with the bindings set below
-        unbind "Alt n" "Alt Left" "Alt Right" "Alt Up" "Alt Down" "Alt h" "Alt j" "Alt k" "Alt l"
-        // Rename the pane
-        bind "Alt p" { SwitchToMode "RenamePane"; PaneNameInput 0; }
-        // Rename the tab
-        bind "Alt t" { SwitchToMode "RenameTab"; TabNameInput 0; }
-        // cmd+[ / cmd+]: previous / next pane
-        bind "Super [" { FocusPreviousPane; }
-        bind "Super ]" { FocusNextPane; }
-        // cmd+d / cmd+shift+d: new pane to the right / below
-        bind "Super d" { NewPane "right"; }
-        bind "Shift Super d" { NewPane "down"; }
-        // cmd+t / cmd+w: new tab / close the focused pane
-        bind "Super t" { NewTab; }
-        bind "Super w" { CloseFocus; }
-        // cmd+shift+[ / cmd+shift+]: previous / next tab
-        bind "Shift Super [" { GoToPreviousTab; }
-        bind "Shift Super ]" { GoToNextTab; }
-        // cmd+1..9: go to tab N
-        bind "Super 1" { GoToTab 1; }
-        bind "Super 2" { GoToTab 2; }
-        bind "Super 3" { GoToTab 3; }
-        bind "Super 4" { GoToTab 4; }
-        bind "Super 5" { GoToTab 5; }
-        bind "Super 6" { GoToTab 6; }
-        bind "Super 7" { GoToTab 7; }
-        bind "Super 8" { GoToTab 8; }
-        bind "Super 9" { GoToTab 9; }
-    }
-}
-*/
-
 // Nord with a brighter focused-pane frame (themes/nord-hl.kdl)
 theme "nord-hl"
 show_startup_tips false
@@ -44,7 +5,6 @@ show_startup_tips false
 // Every binding is spelled out here: clear-defaults drops zellij's built-in set.
 // The cmd (Super) shortcuts below are the ones unbound in Ghostty for this.
 keybinds clear-defaults=true {
-//keybinds {
     shared {
         // opt+shift+y: copy the last command and its output to the clipboard,
         // ready to paste into an AI agent. DumpScreen runs first, so it still
@@ -358,9 +318,6 @@ plugins {
 // eg. "https://example.com/my-plugin.wasm"
 load_plugins {
     zellij:link
-}
-web_client {
-    font "monospace"
 }
  
 // Use a simplified UI without special fonts (arrow glyphs)

@@ -32,7 +32,6 @@ setopt noautoremoveslash    # Keep a trailing slash after completing a directory
 # === Completion and input ===
 setopt interactive_comments # Allow # comments on the command line
 setopt list_packed          # Pack the completion list into fewer lines
-setopt nolistbeep           # No beep when showing the completion list
 setopt menu_complete        # Insert the first match right away
 setopt complete_aliases     # Complete aliases as commands of their own
 
@@ -59,7 +58,6 @@ HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=100000      # Entries kept in memory
 SAVEHIST=100000      # Entries saved to the file
 
-setopt append_history
 setopt share_history            # Share history across running zsh sessions
 setopt hist_ignore_dups         # Skip a command identical to the previous one
 setopt hist_ignore_space        # Skip commands that start with a space

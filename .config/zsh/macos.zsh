@@ -16,7 +16,6 @@
 # ~120ms to every prompt, only to export VIRTUAL_ENV on cd. `pyenv activate`
 # / `pyenv shell` keep working through the lazily defined pyenv function.
 export PYENV_ROOT="$HOME/.pyenv"
-export VIRTUAL_ENV_DISABLE_PROMPT=1
 path=("$PYENV_ROOT/shims" $path)
 pyenv() {
 	unfunction pyenv

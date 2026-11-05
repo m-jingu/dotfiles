@@ -105,15 +105,11 @@ log_info "Creating necessary directories..."
 # Personal binaries (on PATH via .zshenv; starship's installer can target it)
 mkdir -p "$HOME/.local/bin"
 
-# zsh: extra completion functions and autoloaded functions
+# zsh: extra completion functions
 mkdir -p "$HOME/.local/share/zsh/functions/Completion"
-mkdir -p "$HOME/.local/share/zsh/autoload"
 
-# vim: plugins and editor state
+# vim: plugins and editor state (viminfo, netrw)
 mkdir -p "$HOME/.config/vim/bundle"
-mkdir -p "$HOME/.config/vim/backup"
-mkdir -p "$HOME/.config/vim/swap"
-mkdir -p "$HOME/.config/vim/undo"
 mkdir -p "$HOME/.local/state/vim"
 
 log_success "Directory creation completed"
