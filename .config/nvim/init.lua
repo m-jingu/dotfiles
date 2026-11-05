@@ -20,16 +20,33 @@ vim.g.loaded_node_provider = 0
 -- Installed on first start into ~/.local/share/nvim/site/pack/core/opt and
 -- pinned in nvim-pack-lock.json next to this file. Update with
 -- :lua vim.pack.update()
+
+-- nvim-treesitter needs its parsers rebuilt whenever the plugin is updated.
+-- Defined before vim.pack.add so it also sees the first install.
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    if ev.data.spec.name == "nvim-treesitter" and ev.data.kind == "update" then
+      if not ev.data.active then vim.cmd.packadd("nvim-treesitter") end
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
+
 vim.pack.add({
   "https://github.com/w0ng/vim-hybrid",              -- Color scheme (same as the vimrc)
   "https://github.com/nvim-lualine/lualine.nvim",    -- Status line (replaces lightline)
   "https://github.com/lewis6991/gitsigns.nvim",      -- Git change signs in the sign column
   "https://github.com/vimoutliner/vimoutliner",      -- Outline editing (.otl files)
+  -- Tree-sitter parsers and queries; the main branch needs the tree-sitter
+  -- CLI and a C compiler to build parsers (brew install tree-sitter-cli)
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
 })
 
 -- ============================================
 -- Display
 -- ============================================
+-- Truecolor is detected automatically (termguicolors), so hybrid uses its
+-- GUI palette; the vimrc turns it on the same way to look identical.
 vim.o.background = "dark"
 vim.cmd.colorscheme("hybrid")
 
@@ -172,12 +189,30 @@ vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
 })
 
 -- ============================================
--- Tree-sitter highlighting
+-- Tree-sitter (nvim-treesitter)
 -- ============================================
--- Use the parsers bundled with Neovim (c, lua, markdown, vim, vimdoc, query)
--- where one exists; other filetypes keep the regex syntax files.
+-- Parsers to keep installed in ~/.local/share/nvim/site/parser. install()
+-- builds them in the background, and only when the tree-sitter CLI exists.
+-- Loading the installer costs ~10ms, so it is only called when a parser is
+-- actually missing.
+local parsers = {
+  "bash", "c", "css", "diff", "dockerfile", "git_config", "gitcommit",
+  "gitignore", "go", "html", "javascript", "json", "kdl", "lua", "make",
+  "markdown", "markdown_inline", "python", "query", "regex", "rust", "sql",
+  "toml", "typescript", "vim", "vimdoc", "yaml",
+}
+local parser_dir = vim.fn.stdpath("data") .. "/site/parser/"
+local missing = vim.tbl_filter(function(lang)
+  return not vim.uv.fs_stat(parser_dir .. lang .. ".so")
+end, parsers)
+if #missing > 0 and vim.fn.executable("tree-sitter") == 1 then
+  require("nvim-treesitter").install(missing)
+end
+
+-- Highlight with tree-sitter wherever a parser exists for the filetype;
+-- other filetypes keep the regex syntax files. Folding stays manual.
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("BundledTreesitter", { clear = true }),
+  group = vim.api.nvim_create_augroup("Treesitter", { clear = true }),
   callback = function(args) pcall(vim.treesitter.start, args.buf) end,
 })
 

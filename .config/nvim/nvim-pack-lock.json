@@ -8,6 +8,11 @@
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
+    "nvim-treesitter": {
+      "rev": "610734c5d3e59761d5f79318d120633374537fa5",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'main'"
+    },
     "vim-hybrid": {
       "rev": "cc58baabeabc7b83768e25b852bf89c34756bf90",
       "src": "https://github.com/w0ng/vim-hybrid"
