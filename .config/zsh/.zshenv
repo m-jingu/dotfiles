@@ -19,7 +19,9 @@ export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
 export NPM_CONFIG_CACHE="$HOME/.cache/npm"
 export PYTHON_HISTORY="$HOME/.local/state/python/history"   # Python 3.13+
 export REDISCLI_HISTFILE="$HOME/.local/state/redis/rediscli_history"
-export WGETRC="$HOME/.config/wget/wgetrc"
+# wget exits with an error when WGETRC names a missing file, and the wgetrc is
+# not in this repo, so only point at it where it exists.
+[[ -r "$HOME/.config/wget/wgetrc" ]] && export WGETRC="$HOME/.config/wget/wgetrc"
 export MPLCONFIGDIR="$HOME/.config/matplotlib"
 export PARALLEL_HOME="$HOME/.config/parallel"
 export ANSIBLE_HOME="$HOME/.local/share/ansible"
