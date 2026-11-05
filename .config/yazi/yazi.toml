@@ -2,6 +2,10 @@
 
 # Only settings that differ from yazi's defaults live here; yazi merges them
 # over its built-in config, so new defaults from yazi updates still apply.
+#
+# Plugins are pinned in package.toml, which `ya pkg` rewrites (dropping any
+# comments): piper renders Markdown with glow (below), git shows status signs
+# (init.lua), vcs-files lists changed files (g v in keymap.toml).
 
 [mgr]
 # Column widths (parent, current, preview); default [ 1, 4, 3 ]. A wide
