@@ -9,11 +9,22 @@ colors
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Starship draws the prompt; its config is $STARSHIP_CONFIG (set in .zshenv).
-eval "$(starship init zsh)"
+# Without starship (a new machine before install.sh's hint is followed), fall
+# back to a plain prompt laid out the same way: path, host off macOS, "❯".
+if (( $+commands[starship] )); then
+    eval "$(starship init zsh)"
+else
+    if [[ "$OSTYPE" == darwin* ]]; then
+        PROMPT='%F{cyan}%~%f %(?.%F{green}.%F{red})❯%f '
+    else
+        PROMPT='%F{cyan}%~%f %B%F{yellow}%m%f%b %(?.%F{green}.%F{red})❯%f '
+    fi
+    RPROMPT='%F{8}%*%f'
+fi
 
 # Transient prompt: once a line is accepted, redraw it as a bare "❯ cmd" with
 # the time it was run on the right, so only the line being edited carries the
-# full starship prompt. Starship's enable_transience does not support zsh, so
+# full prompt. Starship's enable_transience does not support zsh, so
 # swap PROMPT/RPROMPT in zle-line-finish and put them back in precmd.
 # zjcopy finds command lines by this "❯ " prefix; keep them in sync.
 typeset -g _starship_prompt=$PROMPT _starship_rprompt=$RPROMPT
