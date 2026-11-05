@@ -1,0 +1,20 @@
+{
+  "plugins": {
+    "gitsigns.nvim": {
+      "rev": "ef707fb93301a9b856f36eae4c8f56f5b988a794",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "lualine.nvim": {
+      "rev": "221ce6b2d999187044529f49da6554a92f740a96",
+      "src": "https://github.com/nvim-lualine/lualine.nvim"
+    },
+    "vim-hybrid": {
+      "rev": "cc58baabeabc7b83768e25b852bf89c34756bf90",
+      "src": "https://github.com/w0ng/vim-hybrid"
+    },
+    "vimoutliner": {
+      "rev": "c3efbd58926aec490f5f1e87aa14f63f778f488a",
+      "src": "https://github.com/vimoutliner/vimoutliner"
+    }
+  }
+}

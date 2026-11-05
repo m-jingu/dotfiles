@@ -193,6 +193,7 @@ done
 # Files under .config that only make sense on macOS (Homebrew paths, path_helper,
 # pyenv/rbenv and other Mac-only tools). Not linked on Linux and others.
 MACOS_ONLY=(
+    "nvim"              # whole directory: Linux hosts keep plain Vim
     "zsh/.zprofile"
     "zsh/macos.zsh"
 )
@@ -205,7 +206,7 @@ if [[ -d "$SCRIPT_DIR/.config" ]]; then
         if [[ "$(uname -s)" != Darwin ]]; then
             skip=false
             for mac_only in "${MACOS_ONLY[@]}"; do
-                [[ "$rel" == "$mac_only" ]] && skip=true && break
+                [[ "$rel" == "$mac_only" || "$rel" == "$mac_only"/* ]] && skip=true && break
             done
             if [[ "$skip" == true ]]; then
                 log_info "Skipping (macOS only): .config/$rel"
