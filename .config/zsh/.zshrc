@@ -148,7 +148,8 @@ source "$_zmod_dir/terminal.zsh"
 
 # Plugins and plugin manager. Keep this last: zsh-autosuggestions and
 # fast-syntax-highlighting wrap the widgets that exist when they load, so a
-# widget defined afterwards (e.g. accept-line in prompt.zsh) would escape them.
+# widget defined afterwards (e.g. the zle-line-finish hook in prompt.zsh) would
+# escape them.
 source "$_zmod_dir/plugins.zsh"
 
 

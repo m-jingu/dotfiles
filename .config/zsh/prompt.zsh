@@ -5,32 +5,30 @@
 autoload colors
 colors
 
-# プロンプト設定（ユーザー権限によって色を変更）
-case ${UID} in
-0)
-    # rootユーザー: 赤色でユーザー名@ホスト名を表示
-    PROMPT="%{${fg[red]}%}%n%{${fg[yellow]}%}@%m%{${reset_color}%}# "
-    PROMPT2="%{${fg[cyan]}%}%_%{${reset_color}%}# "
-    ;;
-*)
-    # 一般ユーザー: 黄色でユーザー名@ホスト名を表示
-    PROMPT="%{${fg[yellow]}%}%n@%m%{${reset_color}%}$ "
-    PROMPT2="%{${fg[cyan]}%}%_%{${reset_color}%}$ "
-    ;;
-esac
-# 右側プロンプト: カレントディレクトリと時刻を表示
-RPROMPT="%{${fg[blue]}%}[%~]%{${reset_color}%} [%*]"
-# スペルチェックプロンプト
-SPROMPT="%r is correct? [n,y,a,e]: "
-
-# プロンプトのリセット関数（Enter押下時にプロンプトを再描画）
-re-prompt() {
-    zle .reset-prompt
-    zle .accept-line
-}
-zle -N accept-line re-prompt
-
 # Prevent Python virtualenv from polluting the prompt
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-#eval "$(starship init zsh)"
+# Starship draws the prompt; its config is $STARSHIP_CONFIG (set in .zshenv).
+eval "$(starship init zsh)"
+
+# Transient prompt: once a line is accepted, redraw it as a bare "❯ cmd" with
+# the time it was run on the right, so only the line being edited carries the
+# full starship prompt. Starship's enable_transience does not support zsh, so
+# swap PROMPT/RPROMPT in zle-line-finish and put them back in precmd.
+# zjcopy finds command lines by this "❯ " prefix; keep them in sync.
+typeset -g _starship_prompt=$PROMPT _starship_rprompt=$RPROMPT
+
+_transient_prompt_restore() {
+    PROMPT=$_starship_prompt
+    RPROMPT=$_starship_rprompt
+}
+
+_transient_prompt_collapse() {
+    PROMPT='%(?.%F{green}.%F{red})❯%f '
+    RPROMPT='%F{8}%*%f'
+    zle .reset-prompt
+}
+
+autoload -Uz add-zsh-hook add-zle-hook-widget
+add-zsh-hook precmd _transient_prompt_restore
+add-zle-hook-widget zle-line-finish _transient_prompt_collapse
