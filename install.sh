@@ -105,6 +105,9 @@ done
 ## ============================================
 log_info "Creating necessary directories..."
 
+# Personal binaries (on PATH via .zshenv; starship's installer can target it)
+mkdir -p "$HOME/.local/bin"
+
 # zsh関連ディレクトリ
 mkdir -p "$HOME/.local/share/zsh/functions/Completion"
 mkdir -p "$HOME/.local/share/zsh/autoload"
@@ -252,6 +255,54 @@ chmod 755 "$HOME"
 log_success "Permission setting completed"
 
 ## ============================================
+## 未導入ツールの案内
+## ============================================
+# Prints the command that installs starship on this machine. Uses the OS
+# package manager only where starship is known to be packaged; anything else
+# gets the official installer into ~/.local/bin, which needs no sudo.
+starship_install_cmd() {
+    local fetch="curl -sS"
+    if ! command -v curl >/dev/null 2>&1 && command -v wget >/dev/null 2>&1; then
+        fetch="wget -qO-"
+    fi
+    local installer="$fetch https://starship.rs/install.sh | sh -s -- -b ~/.local/bin"
+
+    case "$(uname -s)" in
+        Darwin)  echo "brew install starship"; return ;;
+        FreeBSD) echo "sudo pkg install starship"; return ;;
+        Linux)   ;;
+        *)       echo "$installer"; return ;;
+    esac
+
+    local id="" like=""
+    if [[ -r /etc/os-release ]]; then
+        id=$(. /etc/os-release && echo "${ID:-}")
+        like=$(. /etc/os-release && echo "${ID_LIKE:-}")
+    fi
+    case " $id $like " in
+        *" arch "*)
+            echo "sudo pacman -S starship" ;;
+        *" alpine "*)
+            echo "sudo apk add starship" ;;
+        *" debian "*|*" ubuntu "*)
+            # Packaged only in newer releases (e.g. Debian 13, Kali), so ask apt.
+            if apt-cache show starship >/dev/null 2>&1; then
+                echo "sudo apt install starship"
+            else
+                echo "$installer"
+            fi ;;
+        *)
+            # RHEL family (Rocky, Amazon Linux, ...) has no starship package.
+            echo "$installer" ;;
+    esac
+}
+
+STARSHIP_MISSING=false
+if ! command -v starship >/dev/null 2>&1 && [[ ! -x "$HOME/.local/bin/starship" ]]; then
+    STARSHIP_MISSING=true
+fi
+
+## ============================================
 ## 完了メッセージ
 ## ============================================
 echo
@@ -261,6 +312,11 @@ echo "${BOLD}Setup Results:${RESET}"
 echo "  - Links created: $LINKED_COUNT files"
 echo "  - Skipped: $SKIPPED_COUNT files"
 echo
+if [[ "$STARSHIP_MISSING" == true ]]; then
+    log_warning "starship is not installed; the prompt needs it. Install it with:"
+    echo "     ${BLUE}$(starship_install_cmd)${RESET}"
+    echo
+fi
 echo "${BOLD}Next Steps:${RESET}"
 echo "  1. Open a new terminal or run the following command:"
 echo "     ${BLUE}exec zsh${RESET}"
