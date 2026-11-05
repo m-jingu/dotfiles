@@ -3,22 +3,36 @@
 add_newline = false
 
 format = "$directory$os$git_branch$git_status$nodejs$rust$golang$php $character"
+right_format = "$time"
 
 [os]
 disabled = false
 format = "[$symbol](#blue) "
 
 [os.symbols]
-Ubuntu  = "󰕈"
-Artix   = "󰣇"
-Arch    = "󰣇"
-CachyOS = "󰣇"
-Macos   = ""
+Ubuntu     = "󰕈"
+Artix      = "󰣇"
+Arch       = "󰣇"
+CachyOS    = "󰣇"
+Macos      = ""
+Kali       = ""
+RockyLinux = ""
+Amazon     = ""
 
+# Fish-style path: every directory but the last is shortened to its first
+# letter (~/w/i/terminal-setup). Repo-relative truncation is off so the path
+# always reads from ~ or /.
 [directory]
-format            = "[$path](cyan) "
-truncation_length = 4
-truncate_to_repo  = true
+format                    = "[$path](cyan)[$read_only]($read_only_style) "
+truncation_length         = 1
+fish_style_pwd_dir_length = 1
+truncate_to_repo          = false
+
+[time]
+disabled    = false
+format      = "[$time]($style)"
+time_format = "%H:%M:%S"
+style       = "bright-black"
 
 [git_branch]
 symbol = ""
