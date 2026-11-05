@@ -26,7 +26,7 @@ fi
 
 # ezaがインストールされている場合は優先使用
 if type eza > /dev/null 2>&1; then
-    alias ls='eza --icons auto'
+    alias ls='eza --group-directories-first --time-style=iso'
 fi
 
 # lsの便利なエイリアス
