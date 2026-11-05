@@ -197,7 +197,6 @@ done
 # Files under .config that only make sense on macOS (Homebrew paths, path_helper,
 # pyenv/rbenv and other Mac-only tools). Not linked on Linux and others.
 MACOS_ONLY=(
-    "zsh/.zshenv"
     "zsh/.zprofile"
     "zsh/macos.zsh"
 )

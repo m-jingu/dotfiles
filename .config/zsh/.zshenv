@@ -1,4 +1,4 @@
-# ~/.config/zsh/.zshenv (macOS only; install.sh does not link it elsewhere).
+# ~/.config/zsh/.zshenv (macOS and Linux; Mac-only parts check $OSTYPE).
 # Sourced from ~/.zshenv, which sets ZDOTDIR=~/.config/zsh.
 
 # ---------- XDG base directories ----------
@@ -11,12 +11,12 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # Exporting the XDG_* variables above changes where some tools look on macOS:
 # lazygit uses ~/.config/lazygit instead of ~/Library/Application Support/lazygit
 # (accepted 2026-11-05). glow and Go's os.UserConfigDir ignore them.
+# less (590+) already keeps its history in $XDG_STATE_HOME/lesshst.
 
 # Keep per-tool state out of $HOME for tools that do not follow XDG on their
 # own. Only CLI tools started from zsh see these; GUI apps do not.
 export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
 export NPM_CONFIG_CACHE="$HOME/.cache/npm"
-export LESSHISTFILE="$HOME/.local/state/less/history"
 export PYTHON_HISTORY="$HOME/.local/state/python/history"   # Python 3.13+
 export REDISCLI_HISTFILE="$HOME/.local/state/redis/rediscli_history"
 export WGETRC="$HOME/.config/wget/wgetrc"
@@ -45,9 +45,11 @@ typeset -U path PATH
 # Personal binaries/scripts
 export PATH="$HOME/.local/bin:$PATH"
 
-# Homebrew for every zsh, including non-interactive ones. Login shells reorder
-# PATH afterwards through path_helper; .zprofile restores the order.
-path=(/opt/homebrew/bin /opt/homebrew/sbin /opt/homebrew/opt/unzip/bin $path)
+# Homebrew for every zsh on macOS, including non-interactive ones. Login shells
+# reorder PATH afterwards through path_helper; .zprofile restores the order.
+if [[ "$OSTYPE" == darwin* ]]; then
+  path=(/opt/homebrew/bin /opt/homebrew/sbin /opt/homebrew/opt/unzip/bin $path)
+fi
 
 # Trust an internal CA so Node (Claude Code MCP over https) can verify
 # an internal server certificate.

@@ -7,5 +7,5 @@
 # machines without sudo work too.
 export ZDOTDIR="$HOME/.config/zsh"
 
-# Real environment settings (macOS only; install.sh does not link it on Linux).
+# Real environment settings (environment variables and PATH).
 [[ -r "$ZDOTDIR/.zshenv" ]] && source "$ZDOTDIR/.zshenv"

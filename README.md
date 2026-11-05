@@ -60,7 +60,7 @@ dotfiles/
 │   │       ├── dev.kdl
 │   │       └── n.kdl
 │   └── zsh/
-│       ├── .zshenv     # 環境変数・PATH（macOS のみ）
+│       ├── .zshenv     # 環境変数・PATH（Homebrew の PATH は macOS のときだけ）
 │       ├── .zprofile   # path_helper 後の PATH の並べ直し（macOS のみ）
 │       ├── .zshrc      # 対話シェルの設定。下のモジュールを読む
 │       ├── macos.zsh   # pyenv/rbenv・gcloud・rustup、zdev/za/y（macOS のみ）
@@ -85,7 +85,7 @@ dotfiles/
 
 `.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
 （`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
-このリポジトリは private。`install.sh` の `MACOS_ONLY` に挙げたファイル（zsh の `.zshenv`・`.zprofile`・`macos.zsh`）は
+このリポジトリは private。`install.sh` の `MACOS_ONLY` に挙げたファイル（zsh の `.zprofile`・`macos.zsh`）は
 macOS でだけリンクする。マシン固有の設定（`~/.config/zsh/.zshrc.mine`、`~/.config/git/config` など）は入れず、実ファイルのまま置く。
 
 Vim のプラグイン（`~/.config/vim/bundle`）は実ディレクトリで、`vimrc` だけがリンク。
