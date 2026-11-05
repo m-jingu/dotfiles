@@ -44,6 +44,7 @@ unset _f
 
 path=("$HOME/bin" "$HOME/.local/bin" $path)
 
+# Old helper from when ~/.ssh/config was generated from conf.d (now Include):
 #alias ssh-config-update="cat ~/.ssh/conf.d/*.conf ~/.ssh/conf.d/common-config > ~/.ssh/config"
 
 ## ============================================
@@ -97,6 +98,8 @@ za() {
 ## ============================================
 ## Yazi
 ## ============================================
+# y: run yazi and cd to the directory it was in on exit (yazi writes it to
+# --cwd-file). Plain `yazi` leaves the shell where it was.
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	command yazi "$@" --cwd-file="$tmp"

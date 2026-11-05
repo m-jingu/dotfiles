@@ -4,7 +4,8 @@
 #:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
-#ratio          = [ 1, 4, 3 ]
+# Column widths (parent, current, preview); default [ 1, 4, 3 ]. A wide
+# preview suits the narrow yazi pane in the zellij dev layout.
 ratio          = [1, 2, 7]
 sort_by        = "alphabetical"
 sort_sensitive = false
@@ -13,11 +14,10 @@ sort_dir_first = true
 sort_translit  = false
 sort_fallback  = "alphabetical"
 linemode       = "none"
-#show_hidden    = false
-show_hidden    = true
+show_hidden    = true   # Dotfiles visible by default (toggle with .)
 show_symlink   = true
 scrolloff      = 5
-mouse_events   = [ "click", "scroll", "drag" ]
+mouse_events   = [ "click", "scroll", "drag" ]  # Adds drag to the default click/scroll
 
 [preview]
 wrap            = "no"

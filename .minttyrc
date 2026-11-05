@@ -1,9 +1,16 @@
+# mintty (Cygwin / MSYS2 / Git Bash terminal on Windows)
+# Lines starting with # are comments.
+
+# Show bold text in a bold font rather than a brighter color
 BoldAsFont=yes
 Font=Menlo
 CursorType=block
 FontHeight=12
+# Right click pastes instead of opening the menu
 RightClickAction=paste
 Transparency=high
+# Japanese locale with UTF-8 text
 Locale=ja_JP
 Charset=UTF-8
+# Custom ANSI blue (R,G,B)
 Blue=0,128,255

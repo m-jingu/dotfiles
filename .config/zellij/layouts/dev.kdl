@@ -1,6 +1,6 @@
 layout {
     // The tab name is supplied from the outside by the `zdev` shell function
-    // (see ~/.zshrc.mine): it passes `--name` to `zellij action new-tab`, or
+    // (see .config/zsh/macos.zsh): it passes `--name` to `zellij action new-tab`, or
     // injects a `name=` attribute into a temporary copy of this file when
     // starting a brand-new session. Zellij layouts cannot expand env vars, so
     // the name cannot be computed here. Do not add a `name=` below: it would
@@ -9,14 +9,15 @@ layout {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
+        // lazygit | yazi | Claude Code over a spare shell
         pane split_direction="vertical" {
             pane size="10%" {
                 command "lazygit"
             }
             pane size="40%" {
-                // Hover README.md when the directory has one. imefocus
-                // (~/work/utils/imefocus) selects the Roman input mode each
-                // time this pane gains focus, so yazi gets keys, not kana.
+                // Hover README.md when the directory has one. imefocus (a
+                // separate helper, not in this repo) selects the Roman input
+                // mode each time this pane gains focus, so yazi gets keys, not kana.
                 command "zsh"
                 args "-c" "if [[ -f README.md ]]; then imefocus yazi README.md; else imefocus yazi; fi"
             }
@@ -35,6 +36,7 @@ layout {
             plugin location="zellij:status-bar"
         }
     }
+    // Tabs opened later get a plain shell between the tab and status bars
     new_tab_template {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"

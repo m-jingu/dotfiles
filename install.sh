@@ -1,20 +1,20 @@
 #!/bin/bash
 
 ## ============================================
-## dotfiles セットアップスクリプト
+## dotfiles setup script
 ## ============================================
-# このスクリプトは以下の処理を行います：
-# 1. zsh プラグインのインストール
-# 2. ドットファイルのシンボリックリンク作成（.config 配下はファイル単位）
-# 3. 必要なディレクトリの作成
-# 4. 権限の設定
+# 1. Clone the zsh plugins
+# 2. Create the directories the configs expect
+# 3. Symlink the dotfiles (files under .config one by one)
+# 4. Install yazi plugins and fix permissions
+# 5. Print the starship install command if starship is missing
+# Safe to run again: existing links are kept and other files are backed up.
 
-set -e  # エラーが発生したら即座に終了
-set -u  # 未定義変数を使用したらエラー
+set -e  # Exit on the first error
+set -u  # Treat unset variables as errors
 
-# カラー出力の設定（環境に応じて自動判定）
+# Colored output only when stdout is a terminal with tput
 if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
-    # ターミナル出力でtputが利用可能な場合
     RED=$(tput setaf 1)
     GREEN=$(tput setaf 2)
     YELLOW=$(tput setaf 3)
@@ -22,7 +22,6 @@ if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
     BOLD=$(tput bold)
     RESET=$(tput sgr0)
 else
-    # カラー出力が利用できない場合
     RED=""
     GREEN=""
     YELLOW=""
@@ -31,7 +30,7 @@ else
     RESET=""
 fi
 
-# ログ関数
+# Logging helpers
 log_info() {
     echo "${BLUE}[INFO]${RESET} $1"
 }
@@ -48,31 +47,29 @@ log_error() {
     echo "${RED}[ERROR]${RESET} $1" >&2
 }
 
-# エラーハンドリング関数
+# Print an error and exit
 error_exit() {
     log_error "$1"
     exit 1
 }
 
-# スクリプトの実行ディレクトリを取得（シンボリックリンクを解決）
+# Directory of this script (resolving a symlink to it)
 if [[ -L "$0" ]]; then
-    # シンボリックリンクの場合、リンク先を取得
     SCRIPT_DIR=$(cd "$(dirname "$(readlink "$0")")" && pwd)
 else
-    # 通常のファイルの場合
     SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 fi
 
 log_info "Starting dotfiles setup..."
 log_info "Script directory: $SCRIPT_DIR"
 
-# ホームディレクトリの存在確認
+# $HOME must exist
 if [[ ! -d "$HOME" ]]; then
     error_exit "Home directory ($HOME) not found"
 fi
 
 ## ============================================
-## zsh プラグインのインストール
+## zsh plugins
 ## ============================================
 # Plain git clones sourced directly from .zshrc (zplug is no longer used).
 log_info "Installing zsh plugins..."
@@ -101,18 +98,18 @@ for repo in "${ZSH_PLUGINS[@]}"; do
 done
 
 ## ============================================
-## 必要なディレクトリの作成
+## Directories
 ## ============================================
 log_info "Creating necessary directories..."
 
 # Personal binaries (on PATH via .zshenv; starship's installer can target it)
 mkdir -p "$HOME/.local/bin"
 
-# zsh関連ディレクトリ
+# zsh: extra completion functions and autoloaded functions
 mkdir -p "$HOME/.local/share/zsh/functions/Completion"
 mkdir -p "$HOME/.local/share/zsh/autoload"
 
-# vim関連ディレクトリ
+# vim: plugins and editor state
 mkdir -p "$HOME/.config/vim/bundle"
 mkdir -p "$HOME/.config/vim/backup"
 mkdir -p "$HOME/.config/vim/swap"
@@ -122,11 +119,11 @@ mkdir -p "$HOME/.local/state/vim"
 log_success "Directory creation completed"
 
 ## ============================================
-## ドットファイルのシンボリックリンク作成
+## Symlinks
 ## ============================================
 log_info "Creating symbolic links for dotfiles..."
 
-# 除外するファイル・ディレクトリのリスト
+# Top-level entries that are not linked into $HOME (.config is handled below)
 EXCLUDE_FILES=(
     ".git"
     ".DS_Store"
@@ -242,20 +239,20 @@ if command -v ya >/dev/null 2>&1; then
 fi
 
 ## ============================================
-## 権限の設定
+## Permissions
 ## ============================================
 log_info "Setting file permissions..."
 
-# スクリプトファイルに実行権限を付与
+# Keep this script executable
 chmod +x "$SCRIPT_DIR/install.sh"
 
-# ホームディレクトリの権限を適切に設定（セキュリティのため）
+# Make $HOME not writable by group or others
 chmod 755 "$HOME"
 
 log_success "Permission setting completed"
 
 ## ============================================
-## 未導入ツールの案内
+## Missing tools
 ## ============================================
 # Prints the command that installs starship on this machine. Uses the OS
 # package manager only where starship is known to be packaged; anything else
@@ -303,7 +300,7 @@ if ! command -v starship >/dev/null 2>&1 && [[ ! -x "$HOME/.local/bin/starship" 
 fi
 
 ## ============================================
-## 完了メッセージ
+## Summary
 ## ============================================
 echo
 log_success "dotfiles setup completed!"
@@ -325,7 +322,7 @@ echo "  2. If you encounter issues, check backup files:"
 echo "     ${BLUE}ls -la ~/*.backup.*${RESET}"
 echo
 
-# バックアップファイルが存在する場合の通知
+# Remind about backups made of files that links replaced
 if ls "$HOME"/*.backup.* >/dev/null 2>&1; then
     log_warning "Backup files have been created. Remove them when no longer needed."
 fi

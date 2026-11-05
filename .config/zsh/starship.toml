@@ -1,6 +1,10 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-add_newline = false
+# Starship prompt, shared by macOS and Linux (STARSHIP_CONFIG points here).
+# Layout: path, Apple logo or host name, Git, language versions, then ❯; the
+# time sits on the right. prompt.zsh collapses accepted lines to "❯ cmd".
+
+add_newline = false   # No blank line between prompts
 
 format = "$directory${custom.apple}$hostname$git_branch$git_status$nodejs$rust$golang$php $character"
 right_format = "$time"
@@ -30,16 +34,20 @@ truncation_length         = 1
 fish_style_pwd_dir_length = 1
 truncate_to_repo          = false
 
+# Clock on the right (right_format)
 [time]
 disabled    = false
 format      = "[$time]($style)"
 time_format = "%H:%M:%S"
 style       = "bright-black"
 
+# Nerd Font branch icon and the branch name
 [git_branch]
 symbol = ""
 format = "[$symbol $branch](bold purple) "
 
+# Counts of commits ahead/behind and of staged, modified, untracked, deleted
+# and conflicted files; each part shows only when non-zero
 [git_status]
 format     = "($ahead_behind$staged$modified$untracked$deleted$conflicted)"
 ahead      = "[⇡$count ](bold cyan)"
@@ -51,6 +59,7 @@ untracked  = "[?$count ](bold white)"
 deleted    = "[✘$count ](bold red)"
 conflicted = "[⚡$count ](bold red)"
 
+# Language versions, shown only in directories with matching project files
 [nodejs]
 symbol = ""
 format = "[$symbol $version](green) "
@@ -67,6 +76,7 @@ format = "[$symbol $version](cyan) "
 symbol = ""
 format = "[$symbol $version](purple) "
 
+# Green after success, red after a failed command; ❮ in vi command mode
 [character]
 success_symbol = "[❯](green)"
 error_symbol   = "[❯](red)"

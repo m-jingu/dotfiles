@@ -1,26 +1,26 @@
 ## ============================================
-## ターミナル設定
+## Terminal
 ## ============================================
-# screenセッションの場合はTERMをxtermに設定
+# Inside screen, present the terminal as xterm
 case "${TERM}" in
 screen)
     TERM=xterm
     ;;
 esac
 
-# ターミナルタイプ別の設定
+# Quirks of specific terminal types
 case "${TERM}" in
 kterm*)
-    stty erase '^H'  # ktermではバックスペースを^Hに設定
+    stty erase '^H'  # kterm sends ^H for Backspace
     ;;
 cons25)
-    unset LANG       # cons25ではLANGを無効化
+    unset LANG       # The FreeBSD console cannot show UTF-8
     ;;
 *)
     ;;
 esac
 
-# ターミナルタイトルにカレントディレクトリを含める
+# Put user@host:cwd in the terminal title before each prompt
 case "${TERM}" in
 xterm*|kterm*)
     precmd() {
@@ -29,7 +29,7 @@ xterm*|kterm*)
     ;;
 esac
 
-# 制御文字の設定（Ctrl+S/Ctrl+Qによるフロー制御を無効化）
+# Turn off XON/XOFF flow control so Ctrl+S and Ctrl+Q reach zsh
 if [[ -t 0 ]]; then
   stty stop undef
   stty start undef

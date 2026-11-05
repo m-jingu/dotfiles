@@ -1,7 +1,12 @@
+# Ghostty (macOS). Zellij runs inside it and handles tabs and panes, so the
+# Ghostty shortcuts that would clash are unbound further down.
+
 #keybind = global:alt+;=toggle_quick_terminal
 #theme = hybrid
 theme = Nord Wave
 background-opacity = 0.85
+
+# ---------- Font ----------
 font-family = Monaco
 # macOS CTFontCreateForString is non-deterministic and Ghostty caches the
 # result for the process lifetime, occasionally picking the wrong CJK
@@ -11,33 +16,37 @@ font-family = Monaco
 # W5/W6 overshoot and make Monaco look thin by comparison.
 font-codepoint-map = U+3000-U+303F,U+3040-U+30FF,U+31F0-U+31FF,U+4E00-U+9FFF,U+F900-U+FAFF,U+FF00-U+FFEF=Hiragino Sans W4
 font-size = 16
+
+# ---------- Cursor and terminal ----------
 cursor-style = block
 cursor-style-blink = false
+# Keep the block cursor in the shell too (shell integration would switch it to a bar)
 shell-integration-features = no-cursor
 copy-on-select = clipboard
+# Remote hosts often lack Ghostty's own terminfo (xterm-ghostty)
 term = xterm-256color
 macos-titlebar-style = hidden
 
-# quick-terminal周り
+# ---------- Quick terminal (drop-down window) ----------
 quick-terminal-position = "top"
 quick-terminal-screen = "main"
 quick-terminal-size = 100%
 quick-terminal-animation-duration = 0
 quick-terminal-autohide = false
 
-## Zellij用に無効化
-# cmd+[,] pane間の移動用
+# ---------- Keys left to Zellij ----------
+# cmd+[ / cmd+]: move between panes
 keybind = super+[=unbind
 keybind = super+]=unbind
 keybind = super+shift+[=unbind
 keybind = super+shift+]=unbind
-# cmd+t,w tabを開閉
+# cmd+t / cmd+w: open and close tabs
 keybind = super+t=unbind
 keybind = super+w=unbind
-# cmd+d, shift+d paneを開く
+# cmd+d / cmd+shift+d: split panes
 keybind = super+d=unbind
 keybind = super+shift+d=unbind
-# cmd+1,...,9 tab間の移動
+# cmd+1..9: switch tabs (both key names, for different keyboard layouts)
 keybind = super+1=unbind
 keybind = super+2=unbind
 keybind = super+3=unbind
@@ -56,14 +65,14 @@ keybind = super+digit_6=unbind
 keybind = super+digit_7=unbind
 keybind = super+digit_8=unbind
 keybind = super+digit_9=unbind
-# cmd+shift+enter paneの最大化（Ghostty の toggle_split_zoom の代わりに zellij で行う）
+# cmd+shift+enter: zoom a pane (done by Zellij instead of Ghostty's toggle_split_zoom)
 keybind = super+shift+enter=unbind
-
+# alt+left / alt+right: Zellij moves focus with these
 keybind = alt+right=unbind
 keybind = alt+left=unbind
 
-## Zellij用にoptをaltとして扱う
+# Left Option acts as Alt, which Zellij's Alt bindings need
 macos-option-as-alt = left
 
-## 画面のスクロール行数
+# Scrollback buffer size in bytes (1 GiB)
 scrollback-limit = 1073741824

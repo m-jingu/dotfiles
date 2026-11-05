@@ -1,9 +1,8 @@
 ## ============================================
-## 環境変数設定
+## Locale
 ## ============================================
-# ロケール設定
 export LANG=C.UTF-8
-# rootユーザーの場合はロケールをCに設定
+# root gets the plain C locale
 case ${UID} in
 0)
     LANG=C
@@ -12,7 +11,7 @@ esac
 
 
 ## ============================================
-## キーマップ
+## Keymap
 ## ============================================
 # Use the emacs keymap explicitly. zsh picks viins on its own when $EDITOR or
 # $VISUAL contains "vi" (EDITOR=vim), which disables Ctrl+A/E/K and friends.
@@ -22,59 +21,58 @@ bindkey -e
 
 
 ## ============================================
-## シェルオプション設定
+## Shell options
 ## ============================================
 
-# === ディレクトリ操作関連 ===
-setopt auto_cd              # ディレクトリ名を入力するだけで移動
-setopt auto_pushd           # cd時にディレクトリスタックに追加（cd -[tab]で履歴表示可能）
-setopt noautoremoveslash    # コマンドライン末尾のスラッシュを自動削除しない
+# === Directories ===
+setopt auto_cd              # Typing a directory name cd's into it
+setopt auto_pushd           # cd pushes onto the directory stack (cd -<Tab> lists it)
+setopt noautoremoveslash    # Keep a trailing slash after completing a directory
 
-# === 入力補完・表示関連 ===
-setopt interactive_comments # インタラクティブモードでコメントを許可
-setopt list_packed          # 補完リストを詰めて表示
-setopt nolistbeep           # 補完リスト表示時のビープ音を無効化
-setopt menu_complete        # 補完候補を自動的に選択
-setopt complete_aliases     # エイリアスも補完対象に含める
+# === Completion and input ===
+setopt interactive_comments # Allow # comments on the command line
+setopt list_packed          # Pack the completion list into fewer lines
+setopt nolistbeep           # No beep when showing the completion list
+setopt menu_complete        # Insert the first match right away
+setopt complete_aliases     # Complete aliases as commands of their own
 
-# === パターンマッチング・展開関連 ===
-setopt magic_equal_subst    # = の後にファイル名展開を有効化（例: PATH=~/.local/bin）
-setopt extended_glob         # '#', '~', '^'をパターンとして使用可能
-setopt nonomatch             # パターンマッチ失敗時のエラーメッセージを非表示
+# === Globbing and expansion ===
+setopt magic_equal_subst    # Expand ~ after = in arguments (e.g. --prefix=~/x)
+setopt extended_glob        # Treat #, ~ and ^ as glob operators
+setopt nonomatch            # Pass an unmatched glob through instead of erroring
 
-# === その他の動作設定 ===
+# === Misc ===
 setopt nobeep
-setopt notify               # バックグラウンドジョブの状態を即座に通知
-setopt numericglobsort      # ファイル名を数値的にソート
-setopt promptsubst          # プロンプト内でコマンド置換を有効化
-setopt print_eight_bit      # 8ビット文字をそのまま表示
-#setopt correct              # コマンドのスペルミスを自動修正
+setopt notify               # Report background job status immediately
+setopt numericglobsort      # Sort numbered file names numerically
+setopt promptsubst          # Expand $(...) in prompts (starship relies on it)
+setopt print_eight_bit      # Print 8-bit (e.g. Japanese) file names as is
+#setopt correct             # Spelling correction for commands (off)
 
 
 ## ============================================
-## 履歴設定
+## History
 ## ============================================
-# 履歴ファイルの場所とサイズ
+# Location and size
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 [[ -d ${HISTFILE:h} ]] || mkdir -p ${HISTFILE:h}
-HISTSIZE=100000      # メモリに保持する履歴数
-SAVEHIST=100000      # ファイルに保存する履歴数
+HISTSIZE=100000      # Entries kept in memory
+SAVEHIST=100000      # Entries saved to the file
 
-# 履歴管理オプション
 setopt append_history
-setopt share_history            # 複数のzshセッション間で履歴を共有
-setopt hist_ignore_dups         # 直前のコマンドと同じ場合は履歴に追加しない
-setopt hist_ignore_space        # スペースで始まるコマンドは履歴に追加しない
-setopt hist_expire_dups_first  # 履歴が上限に達した場合、重複を優先的に削除
-setopt hist_verify              # 履歴展開したコマンドを実行前に確認
-setopt hist_no_store            # historyコマンド（fc -l）を履歴に保存しない
+setopt share_history            # Share history across running zsh sessions
+setopt hist_ignore_dups         # Skip a command identical to the previous one
+setopt hist_ignore_space        # Skip commands that start with a space
+setopt hist_expire_dups_first   # Drop duplicates first when trimming history
+setopt hist_verify              # Show a history expansion before running it
+setopt hist_no_store            # Do not record the history (fc -l) command itself
 
 
 ## ============================================
-## カラー設定
+## Colors
 ## ============================================
-# lsコマンドのカラー設定（OS別）
-# dircolors/gdircolorsでLS_COLORSを設定
+# Set LS_COLORS (also used by completion below) from GNU dircolors, which
+# coreutils on macOS installs as gdircolors
 if type dircolors > /dev/null 2>&1; then
     eval "$(dircolors)"
 elif type gdircolors > /dev/null 2>&1; then
@@ -83,28 +81,28 @@ fi
 
 
 ## ============================================
-## 補完設定
+## Completion
 ## ============================================
-# カスタム補完関数のパスを追加
+# Directory for extra completion functions
 fpath=(${HOME}/.local/share/zsh/functions/Completion ${fpath})
 
-# 補完システムの初期化
+# Initialize completion; keep the dump file in the cache directory
 [[ -d ${XDG_CACHE_HOME:-$HOME/.cache}/zsh ]] || mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
 autoload -Uz compinit
 compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 
-# 補完メニューの設定
-zstyle ':completion:*' menu select interactive  # メニュー形式で補完候補を表示し、インタラクティブに選択
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  # 補完候補にLS_COLORSの色を適用
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# Completion menu
+zstyle ':completion:*' menu select interactive         # Arrow-key menu that narrows as you type
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  # Color candidates like ls
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # Lowercase input matches either case
 
-# プロセス補完の設定
+# Process completion (kill <Tab>): own processes, PIDs in red
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 
 ## ============================================
-## ツール連携
+## Tool integration
 ## ============================================
 # fzf: Ctrl-T (file), Ctrl-R (history), Alt-C (cd). Needs fzf 0.48+.
 if type fzf > /dev/null 2>&1; then
@@ -118,9 +116,9 @@ fi
 
 
 ## ============================================
-## zshエディタ
+## zed
 ## ============================================
-autoload zed  # zedエディタを読み込み（zsh -f で起動可能）
+autoload zed  # zsh's built-in editor: zed <file> edits a file in zle
 
 
 # =========================================================
@@ -154,9 +152,9 @@ source "$_zmod_dir/plugins.zsh"
 
 
 ## ============================================
-## ユーザー設定ファイルの読み込み
+## Platform and machine-specific settings
 ## ============================================
-# 個人用の設定ファイルがあれば読み込む（このファイルより優先）
+# Loaded last so they can override anything above.
 # macOS-specific settings (pyenv/rbenv, gcloud, zellij and yazi helpers).
 [[ "$OSTYPE" == darwin* && -f "$_zmod_dir/macos.zsh" ]] && source "$_zmod_dir/macos.zsh"
 

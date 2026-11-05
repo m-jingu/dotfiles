@@ -1,3 +1,6 @@
+# Yazi plugins, installed by `ya pkg install` (install.sh runs it) and pinned
+# by rev/hash. piper: Markdown preview via glow (yazi.toml); git: status signs
+# (init.lua); vcs-files: list changed files (g v in keymap.toml).
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
 rev = "6229767"

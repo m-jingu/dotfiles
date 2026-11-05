@@ -1,123 +1,129 @@
 # dotfiles
 
-個人的な開発環境設定ファイルのリポジトリ
+Personal shell and editor configuration for macOS and Linux.
 
-## 概要
+## Contents
 
-このリポジトリには、以下の開発環境の設定ファイルが含まれています：
+- **Zsh** (`.zshenv` and `.config/zsh/`): `~/.zshenv` only sets `ZDOTDIR=~/.config/zsh`; everything else lives in `~/.config/zsh/`
+- **Starship** (`.config/zsh/starship.toml`): prompt. Without starship, zsh falls back to a plain prompt with the same layout
+- **Vim** (`.config/vim/vimrc`): Vim 9.1.0327 and later read `~/.config/vim` natively
+- **Git global ignore** (`.config/git/ignore`): git reads this path by default, so no `core.excludesFile` is needed
+- **Mintty** (`.minttyrc`): Windows terminal; `install.sh` links it on Windows (MSYS / Cygwin) only
+- **Ghostty** (`.config/ghostty/config`): terminal emulator (macOS)
+- **Zellij** (`.config/zellij/config.kdl`, `layouts/dev.kdl`, `themes/nord-hl.kdl`): terminal multiplexer
+- **Yazi** (`.config/yazi/`): file manager
 
-- **Zsh設定** (`.zshenv` と `.config/zsh/`) - シェル環境の設定。`~/.zshenv` は `ZDOTDIR=~/.config/zsh` を設定するだけの起点で、残りはすべて `~/.config/zsh/` に置く
-- **Vim設定** (`.config/vim/vimrc`) - エディタの設定（Vim 9.1.0327 以降が `~/.config/vim` を読む）
-- **Git グローバル ignore** (`.config/git/ignore`) - git が標準で読む場所なので `core.excludesFile` は不要
-- **Mintty設定** (`.minttyrc`) - Windowsターミナルの設定（install.sh は Windows 上でのみリンクする）
-- **Ghostty設定** (`.config/ghostty/config`) - ターミナルエミュレータ
-- **Zellij設定** (`.config/zellij/config.kdl`, `layouts/{dev,n}.kdl`) - ターミナルマルチプレクサ
-- **Yazi設定** (`.config/yazi/yazi.toml`) - ファイラ
+## Setup
 
-## セットアップ
+### Requirements
 
-### 前提条件
+- git
+- bash (to run `install.sh`)
+- zsh
 
-- Gitがインストールされていること
-- Bashが使用可能なこと
+### Install
 
-### インストール手順
-
-1. リポジトリをクローン：
+1. Clone the repository (public, no authentication needed):
 ```bash
-git clone https://github.com/your-username/dotfiles.git ~/dotfiles
+git clone https://github.com/m-jingu/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-2. インストールスクリプトを実行：
+2. Run the install script:
 ```bash
 ./install.sh
 ```
 
-3. 新しいターミナルを開くか、設定を再読み込み：
+3. Open a new terminal, or reload the shell:
 ```bash
 exec zsh
 ```
 
-zsh プラグイン（zsh-autosuggestions / zsh-history-substring-search / fast-syntax-highlighting）は
-`install.sh` が `~/.local/share/zsh/plugins/` に git clone する（無ければ zsh の起動時にも clone する）。
-更新は `zplugin-update`。
+The zsh plugins (zsh-autosuggestions, zsh-history-substring-search, fast-syntax-highlighting)
+are cloned into `~/.local/share/zsh/plugins/` by `install.sh`, and by zsh at startup if any is
+missing. Update them with `zplugin-update`.
 
-## ディレクトリ構造
+If starship is not installed, `install.sh` ends by printing the command that installs it on
+this OS (Homebrew, pacman, apk, pkg, apt when packaged, or the official installer into
+`~/.local/bin`, which needs no sudo).
+
+## Layout
 
 ```
 dotfiles/
-├── .zshenv         # 起点: ZDOTDIR を設定し ~/.config/zsh/.zshenv を読む
-├── .minttyrc       # Mintty設定ファイル
-├── .config/        # ~/.config 配下（ファイル単位でリンク）
+├── .zshenv         # Bootstrap: sets ZDOTDIR and sources ~/.config/zsh/.zshenv
+├── .minttyrc       # Mintty (Windows only)
+├── .config/        # Linked into ~/.config file by file
 │   ├── ghostty/config
 │   ├── git/ignore
 │   ├── vim/vimrc
-│   ├── yazi/yazi.toml
+│   ├── yazi/       # yazi.toml, keymap.toml, init.lua, package.toml, helper scripts
 │   ├── zellij/
 │   │   ├── config.kdl
-│   │   └── layouts/
-│   │       └── dev.kdl
+│   │   ├── layouts/
+│   │   │   └── dev.kdl
+│   │   └── themes/
+│   │       └── nord-hl.kdl
 │   └── zsh/
-│       ├── .zshenv     # 環境変数・PATH（Homebrew の PATH は macOS のときだけ）
-│       ├── .zprofile   # path_helper 後の PATH の並べ直し（macOS のみ）
-│       ├── .zshrc      # 対話シェルの設定。下のモジュールを読む
-│       ├── macos.zsh   # pyenv/rbenv・gcloud・rustup、zdev/za/y（macOS のみ）
+│       ├── .zshenv     # Environment variables and PATH (Homebrew paths on macOS only)
+│       ├── .zprofile   # Reorders PATH after path_helper (macOS only)
+│       ├── .zshrc      # Interactive shell; sources the modules below
+│       ├── macos.zsh   # pyenv/rbenv, gcloud, rustup, zdev/za/y (macOS only)
 │       ├── {aliases,bindings,fzf,plugins,prompt,terminal}.zsh
 │       └── starship.toml
-├── install.sh      # セットアップスクリプト
-└── README.md       # このファイル
+├── install.sh      # Setup script
+└── README.md       # This file
 ```
 
-## カスタマイズ
+## Customization
 
-### 個人設定の追加
+### Local settings
 
-各設定ファイルは、個人用の設定ファイルを読み込む機能を持っています：
+Machine-specific settings go in files that are read if present and are not tracked here:
 
-- **Zsh**: `~/.config/zsh/.zshrc.mine` があれば最後に読み込みます（git には入れない。シークレットなどこのマシンだけの設定用）
-- **Vim**: `~/.config/vim/vimrc.local` があれば自動的に読み込みます
+- **Zsh**: `~/.config/zsh/.zshrc.mine` is sourced last (secrets and anything for one machine only)
+- **Vim**: `~/.config/vim/vimrc.local` is sourced at the end of `vimrc`
 
-これらのファイルを作成することで、共有設定を上書きせずに個人設定を追加できます。
+They extend or override the shared settings without editing them.
 
-### `.config` の扱い
+### How `.config` is linked
 
-`.config` 配下はディレクトリごとではなくファイル単位でシンボリックリンクを張る
-（`~/.config` には管理対象外の設定や状態ファイルも置かれるため）。
-このリポジトリは public（認証なしで clone できる）。`install.sh` の `MACOS_ONLY` に挙げたファイル（zsh の `.zprofile`・`macos.zsh`）は
-macOS でだけリンクする。マシン固有の設定（`~/.config/zsh/.zshrc.mine`、`~/.config/git/config` など）は入れず、実ファイルのまま置く。
+Files under `.config` are linked one by one rather than as whole directories, because
+`~/.config` also holds configs and state this repository does not manage.
+The files listed in `MACOS_ONLY` in `install.sh` (zsh's `.zprofile` and `macos.zsh`) are linked
+on macOS only. Machine-specific files (`~/.config/zsh/.zshrc.mine`, `~/.config/git/config`, ...)
+stay out of the repository as plain files.
 
-Vim のプラグイン（`~/.config/vim/bundle`）は実ディレクトリで、`vimrc` だけがリンク。
-viminfo と netrw の履歴は `~/.local/state/vim/` に書く。
+Vim plugins (`~/.config/vim/bundle`) are a real directory; only `vimrc` is a link.
+viminfo and netrw history go to `~/.local/state/vim/`.
 
-### 連携しているツール
+### Optional tools
 
-`.config/zsh/.zshrc` は次のツールがインストールされていれば有効化する（無ければ何もしない）。
+`.config/zsh/.zshrc` enables these when they are installed and does nothing otherwise:
 
-- **fzf**（0.48 以降）: `Ctrl-T` ファイル、`Ctrl-R` 履歴、`Alt-C` ディレクトリ移動
-- **zoxide**: `z <キーワード>` でよく使うディレクトリへ移動、`zi` で fzf から選択
+- **fzf** (0.48+): `Ctrl-T` files, `Ctrl-R` history, `Alt-C` change directory
+- **zoxide**: `z <keyword>` jumps to a frequently used directory, `zi` picks one with fzf
 
-## トラブルシューティング
+## Troubleshooting
 
-### バックアップファイルの確認
+### Backups
 
-インストール時に既存のファイルをバックアップした場合、以下のコマンドで確認できます：
+When `install.sh` replaces an existing file with a link, it keeps the old file as a backup:
 
 ```bash
 ls -la ~/*.backup.*
 ```
 
-不要になったら削除してください。
+Delete them once they are no longer needed.
 
-### 設定の再読み込み
+### Reloading
 
-設定を変更した後は、以下のコマンドで再読み込みできます：
+After changing the configuration:
 
 ```bash
-# Zsh設定
+# Zsh
 exec zsh
 
-# Vim設定（Vim内で）
+# Vim (inside Vim)
 :source $MYVIMRC
 ```
-

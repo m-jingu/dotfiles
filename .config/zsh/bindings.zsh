@@ -1,14 +1,13 @@
 ## ============================================
-## キーバインド設定
+## Key bindings
 ## ============================================
 # The emacs keymap is selected at the top of .zshrc.
-# 履歴検索機能の読み込み
+
+# History search that keeps the cursor at the end of the line
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
-# 履歴検索のキーバインド
-bindkey "^p" history-beginning-search-backward-end  # Ctrl+P: 前方一致で履歴を遡る
-bindkey "^n" history-beginning-search-forward-end   # Ctrl+N: 前方一致で履歴を進む
-bindkey "\e[Z" reverse-menu-complete                # Shift+Tab: 補完メニューを逆方向に移動
-
+bindkey "^p" history-beginning-search-backward-end  # Ctrl+P: older entry starting with the typed text
+bindkey "^n" history-beginning-search-forward-end   # Ctrl+N: newer entry starting with the typed text
+bindkey "\e[Z" reverse-menu-complete                # Shift+Tab: move backwards in the completion menu

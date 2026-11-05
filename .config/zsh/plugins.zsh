@@ -1,14 +1,16 @@
 ## ============================================
-## プラグイン設定
+## Plugins
 ## ============================================
-# Plugins are plain git clones under ~/.local/share/zsh/plugins (install.sh clones them;
-# update with `git -C ~/.local/share/zsh/plugins/<name> pull`). Sourcing them directly
-# replaces zplug, which alone took ~350ms of every shell startup.
+# Plugins are plain git clones under ~/.local/share/zsh/plugins. install.sh
+# clones them, and _zplugin_load clones any that are missing at startup; update
+# them all with `zplugin-update`. Sourcing them directly replaces zplug, which
+# alone took ~350ms of every shell startup.
 # fast-syntax-highlighting must come last: it wraps every widget defined so far.
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=15'  # 提案テキストの色を白色に設定
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=15'  # Suggestion text in bright white
 
 ZPLUGINDIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
 
+# _zplugin_load <github owner> <repo>: clone the plugin if missing, then source it.
 _zplugin_load() {
   local plugin_path="${ZPLUGINDIR}/${2}"
   if [[ ! -d "$plugin_path" ]]; then
@@ -20,6 +22,7 @@ _zplugin_load() {
   source "${plugin_path}/${2}.plugin.zsh"
 }
 
+# Fast-forward every plugin clone.
 zplugin-update() {
   local dir
   for dir in "${ZPLUGINDIR}"/*/; do
